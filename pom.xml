@@ -20,8 +20,8 @@
     </dependency>
     <dependency>
       <groupId>org.cubeville</groupId>
-      <artifactId>cvtools</artifactId>
-      <version>0.2</version>
+      <artifactId>CVTools</artifactId>
+      <version>0.3</version>
       <type>jar</type>
       <scope>compile</scope>
     </dependency>
