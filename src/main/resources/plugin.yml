@@ -1,0 +1,16 @@
+name: CVPortal
+main: org.cubeville.portal.CVPortal
+author: FrediW
+version: 0.1
+
+depend: [CVTools]
+
+commands:
+  cvportal:
+    description: Portal administration command
+    permission: cvportal.admin
+
+permissions:
+  cvportal.admin:
+    description: All about portals
+    default: op
