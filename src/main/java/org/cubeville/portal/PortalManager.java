@@ -21,10 +21,6 @@ public class PortalManager
         portals = (List<Portal>) plugin.getConfig().get("Portals");
         if(portals == null) {
             portals = new ArrayList<>();
-            System.out.println("No portal config found.");
-        }
-        else {
-            System.out.println("NUMBER OF PORTALS LOADED: " + portals.size());
         }
     }
 
@@ -59,6 +55,7 @@ public class PortalManager
 
     public void deletePortal(String name) {
         portals.remove(getPortal(name));
+        save();
     }
     
     public Portal getPortal(String name) {
