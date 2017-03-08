@@ -26,5 +26,8 @@ public class ClearInventory implements Action
     public String getShortInfo() {
         return "CI";
     }
-    
+
+    public boolean isSingular() {
+        return true;
+    }
 }

@@ -8,4 +8,5 @@ public interface Action extends ConfigurationSerializable
 {
     public void execute(Player player);
     public String getShortInfo();
+    public boolean isSingular();
 }

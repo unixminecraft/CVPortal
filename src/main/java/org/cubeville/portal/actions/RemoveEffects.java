@@ -31,4 +31,8 @@ public class RemoveEffects implements Action
     public String getShortInfo() {
         return "RE";
     }
+
+    public boolean isSingular() {
+        return true;
+    }
 }

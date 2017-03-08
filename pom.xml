@@ -25,6 +25,13 @@
       <type>jar</type>
       <scope>compile</scope>
     </dependency>
+    <dependency>
+      <groupId>org.cubeville</groupId>
+      <artifactId>CVIPC</artifactId>
+      <version>0.1</version>
+      <type>jar</type>
+      <scope>compile</scope>
+    </dependency>
   </dependencies>
   <build>
     <plugins>

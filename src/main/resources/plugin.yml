@@ -3,7 +3,7 @@ main: org.cubeville.portal.CVPortal
 author: FrediW
 version: 0.1
 
-depend: [CVTools]
+depend: [CVTools,CVIPC]
 
 commands:
   cvportal:

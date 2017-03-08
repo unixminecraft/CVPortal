@@ -73,6 +73,10 @@ public class Portal implements ConfigurationSerializable
         for(Player player: players) trigger(player, false);
     }
 
+    public void trigger(Player player) {
+        trigger(player, false);
+    }
+    
     public void trigger(Player player, boolean overrideCooldown) {
         if(isPlayerInPortal(player)) {
             if(cooldown == 0 || overrideCooldown) {
@@ -90,7 +94,7 @@ public class Portal implements ConfigurationSerializable
         }
     }
 
-    private void executeActions(Player player) {
+    public void executeActions(Player player) {
         for(Action action: actions) {
             action.execute(player);
         }        
@@ -128,6 +132,14 @@ public class Portal implements ConfigurationSerializable
     }
 
     public void addAction(Action action) {
+        if(action.isSingular()) {
+            String t = action.getClass().getName();
+            for(int i = actions.size() - 1; i >= 0; i--) {
+                if(actions.get(i).getClass().getName().equals(t)) {
+                    actions.remove(i);
+                }
+            }
+        }
         actions.add(action);
     }
     

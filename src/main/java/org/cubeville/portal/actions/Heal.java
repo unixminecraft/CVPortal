@@ -27,4 +27,7 @@ public class Heal implements Action
         return "H";
     }
 
+    public boolean isSingular() {
+        return true;
+    }    
 }

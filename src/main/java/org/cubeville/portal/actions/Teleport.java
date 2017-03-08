@@ -33,4 +33,8 @@ public class Teleport implements Action
     public String getShortInfo() {
         return "TP";
     }
+
+    public boolean isSingular() {
+        return true;
+    }
 }

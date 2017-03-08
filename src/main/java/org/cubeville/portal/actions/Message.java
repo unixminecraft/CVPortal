@@ -33,4 +33,7 @@ public class Message implements Action
         return "MSG";
     }
 
+    public boolean isSingular() {
+        return true;
+    }    
 }
