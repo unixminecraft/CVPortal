@@ -33,7 +33,7 @@ public class CrossServerTeleport implements Action
 
     public void execute(Player player) {
         System.out.println("Send teleport request to server " + server);
-        CVPortal.getInstance().getCVIPC().sendMessage("fwd|" + server + "|xwportal|" + player.getUniqueId() + "|" + portal + "|" + server);
+        CVPortal.getInstance().getCVIPC().sendMessage("fwd|" + server + "|xwportal|" + player.getUniqueId() + "|portal:" + portal + "|" + server);
     }
 
     public boolean isSingular() {

@@ -2,9 +2,11 @@ package org.cubeville.portal;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.StringTokenizer;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -25,20 +27,35 @@ public class LoginTeleporter implements Listener, IPCInterface
     
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        System.out.println("Player " + event.getPlayer().getDisplayName() + " joined.");
         UUID player = event.getPlayer().getUniqueId();
         if(loginTargets.containsKey(player)) {
-            System.out.println("Player is in login map thingy");
-            Portal portal = portalManager.getPortal(loginTargets.get(player));
+            String target = loginTargets.get(player);
             loginTargets.remove(player);
-            if(portal != null) {
-                System.out.println("Tp player to portal location");
-                portal.executeActions(event.getPlayer());
+
+            if(target.startsWith("portal:")) {
+                Portal portal = portalManager.getPortal(target.substring(7));
+                if(portal != null) {
+                    portal.executeActions(event.getPlayer());
+                }
+            }
+            else if(target.startsWith("player:")) {
+                Player targetPlayer = Bukkit.getServer().getPlayer(UUID.fromString(target.substring(7)));
+                if(targetPlayer != null) {
+                    event.getPlayer().teleport(targetPlayer.getLocation());
+                }
+            }
+            else if(target.startsWith("coord:")) {
+                StringTokenizer tk = new StringTokenizer(target.substring(6), ",");
+                String world = tk.nextToken();
+                int x = Integer.valueOf(tk.nextToken());
+                int y = Integer.valueOf(tk.nextToken());
+                int z = Integer.valueOf(tk.nextToken());
+                event.getPlayer().teleport(new Location(Bukkit.getServer().getWorld(world), x, y, z));
             }
         }
     }
 
-    public void process(String message) {
+    public void process(String channel, String message) {
         int idx = message.indexOf("|");
         if(idx == -1) return;
         
@@ -49,11 +66,9 @@ public class LoginTeleporter implements Listener, IPCInterface
         idx = message.indexOf("|");
         if(idx == -1) return;
         
-        String portal = message.substring(0, idx);
-        if(portalManager.getPortal(portal) == null) return;
-
+        String target = message.substring(0, idx);
         String server = message.substring(idx + 1);
-        loginTargets.put(player, portal);
+        loginTargets.put(player, target);
         CVPortal.getInstance().getCVIPC().sendMessage("server|" + player + "|" + server);
     }
 }
