@@ -64,6 +64,7 @@ public class CVPortal extends JavaPlugin {
         loginTeleporter = new LoginTeleporter(portalManager);
         pm.registerEvents(loginTeleporter, this);
         cvipc.registerInterface("xwportal", loginTeleporter);
+        cvipc.registerInterface("tplocal", loginTeleporter);
     }
 
     public void onDisable() {
