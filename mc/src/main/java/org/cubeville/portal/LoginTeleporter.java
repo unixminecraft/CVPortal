@@ -72,6 +72,10 @@ public class LoginTeleporter implements Listener, IPCInterface
         }
     }
 
+    public void setLoginTarget(UUID playerId, String target) {
+        loginTargets.put(playerId, target);
+    }
+    
     public void process(String channel, String message) {
         System.out.println("Portal IPC: " + channel + ": " + message);
 

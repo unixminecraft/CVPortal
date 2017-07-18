@@ -18,6 +18,7 @@ public class CVPortal extends JavaPlugin {
 
     private PortalManager portalManager;
     private CommandParser commandParser;
+    private CommandParser tpposCommandParser;
     private LoginTeleporter loginTeleporter;
     
     private CVIPC cvipc;
@@ -41,10 +42,18 @@ public class CVPortal extends JavaPlugin {
         ConfigurationSerialization.registerClass(ClearInventory.class);
         ConfigurationSerialization.registerClass(Heal.class);
         ConfigurationSerialization.registerClass(RemoveEffects.class);
+        ConfigurationSerialization.registerClass(Cmd.class);
 
         portalManager = new PortalManager(this);
         portalManager.start();
 
+        PluginManager pm = getServer().getPluginManager();
+        cvipc = (CVIPC) pm.getPlugin("CVIPC");
+        loginTeleporter = new LoginTeleporter(portalManager);
+        pm.registerEvents(loginTeleporter, this);
+        cvipc.registerInterface("xwportal", loginTeleporter);
+        cvipc.registerInterface("tplocal", loginTeleporter);
+        
         commandParser = new CommandParser();
         commandParser.addCommand(new PortalCreate());
         commandParser.addCommand(new PortalSetCrossServerTeleport());
@@ -52,20 +61,16 @@ public class CVPortal extends JavaPlugin {
         commandParser.addCommand(new PortalFind());
         commandParser.addCommand(new PortalList());
         commandParser.addCommand(new PortalSelect());
-        commandParser.addCommand(new PortalSet());
+        commandParser.addCommand(new PortalSetCmd());
         commandParser.addCommand(new PortalSetCooldown());
         commandParser.addCommand(new PortalSetMessage());
         commandParser.addCommand(new PortalSetTeleport());
-
-        PluginManager pm = getServer().getPluginManager();
-
-        cvipc = (CVIPC) pm.getPlugin("CVIPC");
-
-        loginTeleporter = new LoginTeleporter(portalManager);
-        pm.registerEvents(loginTeleporter, this);
-        cvipc.registerInterface("xwportal", loginTeleporter);
-        cvipc.registerInterface("tplocal", loginTeleporter);
-    }
+        commandParser.addCommand(new PortalSet());
+        commandParser.addCommand(new PortalLoginTarget(loginTeleporter));
+        
+        tpposCommandParser = new CommandParser();
+        tpposCommandParser.addCommand(new Tppos());
+            }
 
     public void onDisable() {
         portalManager.stop();
@@ -76,6 +81,9 @@ public class CVPortal extends JavaPlugin {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if(command.getName().equals("cvportal")) {
             return commandParser.execute(sender, args);
+        }
+        else if(command.getName().equals("tppos")) {
+            return tpposCommandParser.execute(sender, args);
         }
         return false;
     }

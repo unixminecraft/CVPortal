@@ -9,7 +9,10 @@ commands:
   cvportal:
     description: Portal administration command
     permission: cvportal.admin
-
+  tppos:
+    description: Teleport to coords
+    permission: cvportal.tppos
+    
 permissions:
   cvportal.admin:
     description: All about portals
