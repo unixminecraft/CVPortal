@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.UUID;
 
 import org.bukkit.World;
@@ -76,6 +77,20 @@ public class Portal implements ConfigurationSerializable
     public void trigger(Player player) {
         trigger(player, false);
     }
+
+    public void triggerRandom(Collection<Player> players) {
+        List<Player> playersInPortal = new ArrayList<>();
+        for(Player player: players) {
+            if(isPlayerInPortal(player)) {
+                playersInPortal.add(player);
+            }
+        }
+        if(playersInPortal.size() > 0) {
+            Random rnd = new Random();
+            int i = rnd.nextInt(playersInPortal.size());
+            executeActions(playersInPortal.get(i));
+        }
+    }
     
     public void trigger(Player player, boolean overrideCooldown) {
         if(isPlayerInPortal(player)) {
@@ -95,11 +110,15 @@ public class Portal implements ConfigurationSerializable
     }
 
     public void executeActions(Player player) {
+        String actionList = "";
         for(Action action: actions) {
+            if(actionList.length() > 0) actionList += ",";
+            actionList += action.getShortInfo();
             action.execute(player);
-        }        
+        }
+        System.out.println("Portal " + name + " triggered for player " + player.getName() + " (" + actionList + ")");
     }
-    
+
     public boolean isPlayerInPortal(Player player) {
         Location loc = player.getLocation();
         if(!loc.getWorld().getUID().equals(world)) return false;
@@ -143,6 +162,12 @@ public class Portal implements ConfigurationSerializable
         actions.add(action);
     }
     
+    public void redefine(World world, Vector minCorner, Vector maxCorner) {
+        this.world = world.getUID();
+        this.minCorner = minCorner;
+        this.maxCorner = maxCorner;
+    }
+
     public String getName() {
         return name;
     }
@@ -165,9 +190,11 @@ public class Portal implements ConfigurationSerializable
 
     public void setPermanent(boolean permanent) {
         this.permanent = permanent;
+        if(!permanent) { active = false; }
     }
 
     public void setCooldown(int cooldown) {
         this.cooldown = cooldown;
     }
+
 }

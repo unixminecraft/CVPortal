@@ -23,7 +23,7 @@ public class CrossServerTeleport implements Action
         this.server = (String) config.get("server");
         this.portal = (String) config.get("portal");
     }
-    
+
     public Map<String, Object> serialize() {
         Map<String, Object> ret = new HashMap<>();
         ret.put("server", server);
@@ -32,7 +32,7 @@ public class CrossServerTeleport implements Action
     }
 
     public void execute(Player player) {
-        System.out.println("Send teleport request to server " + server);
+        System.out.println("Player " + player.getName() + " entered x-server portal " + portal + " to server " + server);
         CVPortal.getInstance().getCVIPC().sendMessage("fwd|" + server + "|xwportal|" + player.getUniqueId() + "|portal:" + portal + "|" + server);
     }
 

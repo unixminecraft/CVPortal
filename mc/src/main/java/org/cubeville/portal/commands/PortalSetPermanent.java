@@ -4,35 +4,32 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import org.cubeville.commons.commands.Command;
 import org.cubeville.commons.commands.CommandExecutionException;
+import org.cubeville.commons.commands.CommandParameterBoolean;
 import org.cubeville.commons.commands.CommandParameterString;
 import org.cubeville.commons.commands.CommandResponse;
 
-import org.cubeville.portal.CVPortal;
+import org.cubeville.portal.PortalManager;
 
-public class Setwarp extends Command
+public class PortalSetPermanent extends Command
 {
-    public Setwarp() {
-        super("");
+    public PortalSetPermanent() {
+        super("set permanent");
         addBaseParameter(new CommandParameterString());
+        addBaseParameter(new CommandParameterBoolean());
     }
-    
+
     public CommandResponse execute(Player player, Set<String> flags, Map<String, Object> parameters, List<Object> baseParameters)
         throws CommandExecutionException {
-
         String name = (String) baseParameters.get(0);
-        Location location = player.getLocation();
+        PortalManager portalManager = PortalManager.getInstance();
+        if(portalManager.getPortal(name) == null) throw new CommandExecutionException("&cPortal does not exist!");
 
-        String message = name + "|" + location.getWorld().getName() + "," + round(location.getX()) + "," + round(location.getY()) + "," + round(location.getZ()) + "," + round(location.getPitch()) + "," + round(location.getYaw());
-        CVPortal.getInstance().getCVIPC().sendMessage("setwarp", message);
-        return null;
-    }
+        portalManager.getPortal(name).setPermanent((boolean) baseParameters.get(1));
 
-    private double round(double val) {
-        return val;
+        return new CommandResponse("&aValue set.");
     }
 }

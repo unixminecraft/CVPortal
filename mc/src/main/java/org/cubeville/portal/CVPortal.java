@@ -18,7 +18,9 @@ public class CVPortal extends JavaPlugin {
 
     private PortalManager portalManager;
     private CommandParser commandParser;
+    private CommandParser ptpCommandParser;
     private CommandParser tpposCommandParser;
+    private CommandParser setwarpCommandParser;
     private LoginTeleporter loginTeleporter;
     
     private CVIPC cvipc;
@@ -31,10 +33,10 @@ public class CVPortal extends JavaPlugin {
     public CVIPC getCVIPC() {
         return cvipc;
     }
-    
+
     public void onEnable() {
         instance = this;
-        
+
         ConfigurationSerialization.registerClass(Portal.class);
         ConfigurationSerialization.registerClass(Teleport.class);
         ConfigurationSerialization.registerClass(CrossServerTeleport.class);
@@ -43,6 +45,7 @@ public class CVPortal extends JavaPlugin {
         ConfigurationSerialization.registerClass(Heal.class);
         ConfigurationSerialization.registerClass(RemoveEffects.class);
         ConfigurationSerialization.registerClass(Cmd.class);
+        ConfigurationSerialization.registerClass(SuCmd.class);
 
         portalManager = new PortalManager(this);
         portalManager.start();
@@ -60,17 +63,26 @@ public class CVPortal extends JavaPlugin {
         commandParser.addCommand(new PortalDelete());
         commandParser.addCommand(new PortalFind());
         commandParser.addCommand(new PortalList());
+        commandParser.addCommand(new PortalRedefine());
         commandParser.addCommand(new PortalSelect());
         commandParser.addCommand(new PortalSetCmd());
+        commandParser.addCommand(new PortalSetSuCmd());
         commandParser.addCommand(new PortalSetCooldown());
         commandParser.addCommand(new PortalSetMessage());
         commandParser.addCommand(new PortalSetTeleport());
+        commandParser.addCommand(new PortalSetPermanent());
         commandParser.addCommand(new PortalSet());
         commandParser.addCommand(new PortalLoginTarget(loginTeleporter));
-        
+        commandParser.addCommand(new PortalTrigger());
         tpposCommandParser = new CommandParser();
         tpposCommandParser.addCommand(new Tppos());
-            }
+
+        ptpCommandParser = new CommandParser();
+        ptpCommandParser.addCommand(new Ptp());
+
+        setwarpCommandParser = new CommandParser();
+        setwarpCommandParser.addCommand(new Setwarp());
+    }
 
     public void onDisable() {
         portalManager.stop();
@@ -84,6 +96,12 @@ public class CVPortal extends JavaPlugin {
         }
         else if(command.getName().equals("tppos")) {
             return tpposCommandParser.execute(sender, args);
+        }
+        else if(command.getName().equals("ptp")) {
+            return ptpCommandParser.execute(sender, args);
+        }
+        else if(command.getName().equals("setwarp")) {
+            return setwarpCommandParser.execute(sender, args);
         }
         return false;
     }

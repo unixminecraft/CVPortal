@@ -28,7 +28,7 @@ public class PortalSet extends Command
         pars.add("removeeffects");
         pars.add("heal");
         addBaseParameter(new CommandParameterEnumeratedString(pars));
-        addBaseParameter(new CommandParameterString());        
+        addBaseParameter(new CommandParameterString());
     }
 
     public CommandResponse execute(Player player, Set<String> flags, Map<String, Object> parameters, List<Object> baseParameters)

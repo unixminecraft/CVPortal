@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import org.cubeville.commons.commands.Command;
@@ -12,27 +11,26 @@ import org.cubeville.commons.commands.CommandExecutionException;
 import org.cubeville.commons.commands.CommandParameterString;
 import org.cubeville.commons.commands.CommandResponse;
 
-import org.cubeville.portal.CVPortal;
+import org.cubeville.portal.Portal;
+import org.cubeville.portal.PortalManager;
 
-public class Setwarp extends Command
+public class Ptp extends Command
 {
-    public Setwarp() {
+    public Ptp() {
         super("");
         addBaseParameter(new CommandParameterString());
     }
-    
+
     public CommandResponse execute(Player player, Set<String> flags, Map<String, Object> parameters, List<Object> baseParameters)
         throws CommandExecutionException {
 
         String name = (String) baseParameters.get(0);
-        Location location = player.getLocation();
+        PortalManager portalManager = PortalManager.getInstance();
+        Portal portal = portalManager.getPortal(name);
+        if(portal == null) throw new CommandExecutionException("&cPortal does not exist!");
 
-        String message = name + "|" + location.getWorld().getName() + "," + round(location.getX()) + "," + round(location.getY()) + "," + round(location.getZ()) + "," + round(location.getPitch()) + "," + round(location.getYaw());
-        CVPortal.getInstance().getCVIPC().sendMessage("setwarp", message);
-        return null;
-    }
-
-    private double round(double val) {
-        return val;
+        if(!player.hasPermission("cvportal.ptp." + name.toLowerCase())) throw new CommandExecutionException("&cNo permission.");
+        portal.executeActions(player);
+        return new CommandResponse("");
     }
 }

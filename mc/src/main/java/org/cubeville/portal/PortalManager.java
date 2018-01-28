@@ -35,10 +35,10 @@ public class PortalManager
                     }
                 }
             };
-        
+
         taskId = plugin.getServer().getScheduler().runTaskTimer(plugin, runnable, 30, 30).getTaskId();
     }
-    
+
     public void stop() {
         plugin.getServer().getScheduler().cancelTasks(plugin);
     }
@@ -47,7 +47,7 @@ public class PortalManager
         plugin.getConfig().set("Portals", portals);
         plugin.saveConfig();
     }
-    
+
     public void addPortal(Portal portal) {
         portals.add(portal);
         save();
@@ -57,7 +57,7 @@ public class PortalManager
         portals.remove(getPortal(name));
         save();
     }
-    
+
     public Portal getPortal(String name) {
         for(Portal portal: portals) {
             if(portal.getName().equals(name)) {
@@ -66,7 +66,7 @@ public class PortalManager
         }
         return null;
     }
-    
+
     public static PortalManager getInstance() {
         return instance;
     }

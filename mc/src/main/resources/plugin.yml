@@ -12,7 +12,12 @@ commands:
   tppos:
     description: Teleport to coords
     permission: cvportal.tppos
-    
+  ptp:
+    description: Instantly activate a portal
+  setwarp:
+    description: Set warp location
+    permission: cvportal.setwarp
+
 permissions:
   cvportal.admin:
     description: All about portals
