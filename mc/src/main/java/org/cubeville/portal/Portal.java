@@ -190,7 +190,7 @@ public class Portal implements ConfigurationSerializable
 
     public void setPermanent(boolean permanent) {
         this.permanent = permanent;
-        if(!permanent) { active = false; }
+        active = permanent;
     }
 
     public void setCooldown(int cooldown) {

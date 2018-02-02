@@ -1,5 +1,9 @@
 package org.cubeville.cvportal.commands;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -20,6 +24,24 @@ public class WarpCommand extends Command
         if(!(commandSender instanceof ProxiedPlayer)) return;
         ProxiedPlayer sender = (ProxiedPlayer) commandSender;
 
+        if(args.length >= 1) {
+            if(args[0].equals("delete")) {
+                if(args.length != 2) {
+                    sender.sendMessage("§c/warp delete <warp>");
+                    return;
+                }
+                String warp = args[1];
+                if(warpManager.warpExists(warp)) {
+                    warpManager.delete(warp);
+                    sender.sendMessage("§aWarp deleted.");
+                }
+                else {
+                    sender.sendMessage("§cWarp does not exist!");
+                }
+                return;
+            }
+        }
+        
         if(args.length != 1) {
             sender.sendMessage("§c/warp <target>");
             return;
@@ -28,14 +50,19 @@ public class WarpCommand extends Command
         String target = args[0].toLowerCase();
 
         if(target.equals("list")) {
-            String warplist = "";
+            List<String> warplist = new ArrayList<>();
             for(String warp: warpManager.getWarpNames()) {
                 if(sender.hasPermission("cvportal.warp." + warp)) {
-                    if(warplist.length() > 0) warplist += ", ";
-                    warplist += warp;
+                    warplist.add(warp);
                 }
             }
-            sender.sendMessage("§a" + warplist);
+            Collections.sort(warplist);
+            String s = "";
+            for(String warp: warplist) {
+                if(s.length() > 0) s += ", ";
+                s += warp;
+            }
+            sender.sendMessage("§a" + s);
             return;
         }
         

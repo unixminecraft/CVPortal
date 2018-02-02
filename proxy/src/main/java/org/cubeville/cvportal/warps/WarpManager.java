@@ -64,6 +64,10 @@ public class WarpManager implements IPCInterface
     public Set<String> getWarpNames() {
         return warps.keySet();
     }
+
+    public boolean warpExists(String warpName) {
+        return warps.containsKey(warpName);
+    }
     
     public void save() {
         Configuration cmap = new Configuration();
@@ -102,5 +106,12 @@ public class WarpManager implements IPCInterface
             return;
         }
         ipc.sendMessage(warp.getServer(), "xwportal|" + player.getUniqueId() + "|coord:" + warp.getLocationString() + "|" + warp.getServer());
+    }
+
+    public void delete(String warpName) {
+        if(warps.containsKey(warpName)) {
+            warps.remove(warpName);
+            save();
+        }
     }
 }
