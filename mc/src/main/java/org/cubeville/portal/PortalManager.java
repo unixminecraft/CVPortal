@@ -2,17 +2,26 @@ package org.cubeville.portal;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.plugin.Plugin;
 
-public class PortalManager
+public class PortalManager implements Listener
 {
     private Plugin plugin;
     private Integer taskId;
     private List<Portal> portals;
     private static PortalManager instance;
+    private Map<UUID, Portal> respawnPortals;
     
     public PortalManager(Plugin plugin) {
         this.plugin = plugin;
@@ -22,6 +31,7 @@ public class PortalManager
         if(portals == null) {
             portals = new ArrayList<>();
         }
+        respawnPortals = new HashMap<>();
     }
 
     public void start() {
@@ -68,11 +78,33 @@ public class PortalManager
     }
 
     public static PortalManager getInstance() {
-        return instance;
+       return instance;
     }
 
     public List<Portal> getPortals() {
         return portals;
     }
 
+    @EventHandler
+    public void onPlayerDeath(PlayerDeathEvent event) {
+        Player player = event.getEntity();
+        for(Portal portal: portals) {
+            if(portal.isDeathTriggered() && portal.isPlayerInPortal(player)) {
+                System.out.println("Portal is a death triggered portal, saving player status");
+                respawnPortals.put(player.getUniqueId(), portal);
+                return;
+            }
+        }
+    }
+    
+    @EventHandler
+    public void onPlayerRespawn(PlayerRespawnEvent event) {
+        Player player = event.getPlayer();
+        if(respawnPortals.containsKey(player.getUniqueId())) {
+            Location loc = respawnPortals.get(player.getUniqueId()).getTeleportLocation();
+            if(loc != null) event.setRespawnLocation(loc);
+            respawnPortals.remove(player.getUniqueId());
+        }
+    }
+    
 }

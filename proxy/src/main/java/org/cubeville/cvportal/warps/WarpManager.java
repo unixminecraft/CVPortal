@@ -69,12 +69,14 @@ public class WarpManager implements IPCInterface
         return warps.containsKey(warpName);
     }
     
-    public void save() {
+    private void save() {
         Configuration cmap = new Configuration();
         cmap.set("warps", config);
         try {
             ConfigurationProvider.getProvider(YamlConfiguration.class).save(cmap, configFile);
-        } catch(IOException e) {}
+        } catch(IOException e) {
+            System.out.println("ERROR: Can't save new warp configuration");
+        }
     }
     
     public void process(String server, String channel, String message) {
@@ -111,6 +113,18 @@ public class WarpManager implements IPCInterface
     public void delete(String warpName) {
         if(warps.containsKey(warpName)) {
             warps.remove(warpName);
+            config.set(warpName, null);
+            save();
+        }
+    }
+
+    public void rename(String old, String neww) {
+        if(warps.containsKey(old)) {
+            Warp warp = warps.get(old);
+            warps.remove(old);
+            warps.put(neww, warp);
+            config.set(old, null);
+            config.set(neww, warp.getConfiguration());
             save();
         }
     }

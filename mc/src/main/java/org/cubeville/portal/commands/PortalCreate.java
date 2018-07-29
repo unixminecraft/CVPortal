@@ -31,13 +31,21 @@ public class PortalCreate extends Command
         PortalManager portalManager = PortalManager.getInstance();
         if(portalManager.getPortal(name) != null) throw new CommandExecutionException("&cPortal already exists!");
 
-        Vector min = BlockUtils.getWESelectionMin(player).toVector();
-        Vector max = BlockUtils.getWESelectionMax(player).toVector();
-        max = max.add(new Vector(1.0, 1.0, 1.0));
+        Vector min = null;
+        Vector max = null;
+        boolean noreg = false;
+        try {
+            min = BlockUtils.getWESelectionMin(player).toVector();
+            max = BlockUtils.getWESelectionMax(player).toVector();
+            max = max.add(new Vector(1.0, 1.0, 1.0));
+        }
+        catch(IllegalArgumentException e) {
+            noreg = true;
+        }
         
         Portal portal = new Portal(name, player.getLocation().getWorld(), min, max);
         portalManager.addPortal(portal);
 
-        return new CommandResponse("&aPortal created.");
+        return new CommandResponse(noreg ? "&aPortal created without region." : "&aPortal created.");
     }
 }

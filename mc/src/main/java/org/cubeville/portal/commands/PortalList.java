@@ -26,7 +26,9 @@ public class PortalList extends Command
         
         PortalManager portalManager = PortalManager.getInstance();
         for(Portal portal: portalManager.getPortals()) {
-            ret.addMessage(portal.getInfo());
+            if(portal.getWorld().equals(player.getLocation().getWorld().getUID())) {
+                ret.addMessage(portal.getInfo());
+            }
         }
 
         return ret;

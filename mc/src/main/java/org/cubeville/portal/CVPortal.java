@@ -1,6 +1,5 @@
 package org.cubeville.portal;
 
-
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
@@ -46,11 +45,14 @@ public class CVPortal extends JavaPlugin {
         ConfigurationSerialization.registerClass(RemoveEffects.class);
         ConfigurationSerialization.registerClass(Cmd.class);
         ConfigurationSerialization.registerClass(SuCmd.class);
+        ConfigurationSerialization.registerClass(Velocity.class);
 
         portalManager = new PortalManager(this);
         portalManager.start();
 
         PluginManager pm = getServer().getPluginManager();
+        pm.registerEvents(portalManager, this);
+        
         cvipc = (CVIPC) pm.getPlugin("CVIPC");
         loginTeleporter = new LoginTeleporter(portalManager);
         pm.registerEvents(loginTeleporter, this);
@@ -68,12 +70,16 @@ public class CVPortal extends JavaPlugin {
         commandParser.addCommand(new PortalSetCmd());
         commandParser.addCommand(new PortalSetSuCmd());
         commandParser.addCommand(new PortalSetCooldown());
+        commandParser.addCommand(new PortalSetDeathTriggered());
         commandParser.addCommand(new PortalSetMessage());
         commandParser.addCommand(new PortalSetTeleport());
+        commandParser.addCommand(new PortalSetVelocity());
         commandParser.addCommand(new PortalSetPermanent());
         commandParser.addCommand(new PortalSet());
         commandParser.addCommand(new PortalLoginTarget(loginTeleporter));
+        commandParser.addCommand(new PortalSendMessage());
         commandParser.addCommand(new PortalTrigger());
+
         tpposCommandParser = new CommandParser();
         tpposCommandParser.addCommand(new Tppos());
 
@@ -105,5 +111,5 @@ public class CVPortal extends JavaPlugin {
         }
         return false;
     }
-        
+
 }

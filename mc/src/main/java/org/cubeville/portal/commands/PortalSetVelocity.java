@@ -10,43 +10,33 @@ import org.bukkit.util.Vector;
 import org.cubeville.commons.commands.Command;
 import org.cubeville.commons.commands.CommandExecutionException;
 import org.cubeville.commons.commands.CommandParameterString;
+import org.cubeville.commons.commands.CommandParameterVector;
 import org.cubeville.commons.commands.CommandResponse;
-import org.cubeville.commons.utils.BlockUtils;
 
-import org.cubeville.portal.Portal;
 import org.cubeville.portal.PortalManager;
+import org.cubeville.portal.actions.Velocity;
 
-
-public class PortalRedefine extends Command
+public class PortalSetVelocity extends Command
 {
-    public PortalRedefine() {
-        super("redefine");
+    public PortalSetVelocity() {
+        super("set velocity");
+        setPermission("cvportal.setvelocity");
         addBaseParameter(new CommandParameterString());
-        addFlag("tolerant");
+        addBaseParameter(new CommandParameterVector());
     }
 
     public CommandResponse execute(Player player, Set<String> flags, Map<String, Object> parameters, List<Object> baseParameters)
         throws CommandExecutionException {
 
         String name = (String) baseParameters.get(0);
-
         PortalManager portalManager = PortalManager.getInstance();
-        Portal portal = portalManager.getPortal(name);
-        if(portal == null) throw new CommandExecutionException("&cPortal not found!");
+        if(portalManager.getPortal(name) == null) throw new CommandExecutionException("&cPortal does not exist!");
 
-        Vector min = BlockUtils.getWESelectionMin(player).toVector();
-        Vector max = BlockUtils.getWESelectionMax(player).toVector();
-        max = max.add(new Vector(1.0, 1.0, 1.0));
-
-        if(flags.contains("tolerant")) {
-            min = min.add(new Vector(-0.2, -0.2, -0.2));
-            max = max.add(new Vector(0.2, 0.2, 0.2));
-        }
-        
-        portal.redefine(player.getLocation().getWorld(), min, max);
+        Vector velocity = (Vector) baseParameters.get(1);
+        portalManager.getPortal(name).addAction(new Velocity(velocity));
         portalManager.save();
 
-        return new CommandResponse("&aPortal redefined.");
+        return new CommandResponse("&aVelocity set.");
     }
 
 }

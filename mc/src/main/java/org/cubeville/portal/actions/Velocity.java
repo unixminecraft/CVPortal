@@ -6,39 +6,40 @@ import java.util.Map;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.configuration.serialization.SerializableAs;
+import org.bukkit.util.Vector;
 
-@SerializableAs("Teleport")
-public class Teleport implements Action
+@SerializableAs("Velocity")
+public class Velocity implements Action
 {
-    Location location;
-    
-    public Teleport(Location location) {
-        this.location = location;
+    Vector velocity;
+
+    public Velocity(Vector velocity) {
+        this.velocity = velocity;
     }
 
-    public Teleport(Map<String, Object> config) {
-        this.location = (Location) config.get("location");
+    public Velocity(Map<String, Object> config) {
+        this.velocity = (Vector) config.get("velocity");
     }
 
     public Map<String, Object> serialize() {
         Map<String, Object> ret = new HashMap<>();
-        ret.put("location", location);
+        ret.put("velocity", velocity);
         return ret;
     }
 
     public void execute(Player player) {
-        player.teleport(location);
+        player.setVelocity(velocity);
     }
 
     public String getShortInfo() {
-        return "TP";
+        return "VEL";
     }
 
     public boolean isSingular() {
         return true;
     }
 
-    public Location getLocation() {
-        return location;
+    public Vector getVelocity() {
+        return this.velocity;
     }
 }

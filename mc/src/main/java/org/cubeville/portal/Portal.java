@@ -8,14 +8,15 @@ import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
-import org.bukkit.World;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import org.cubeville.portal.actions.Action;
+import org.cubeville.portal.actions.Teleport;
 
 @SerializableAs("Portal")
 public class Portal implements ConfigurationSerializable
@@ -26,6 +27,7 @@ public class Portal implements ConfigurationSerializable
     private Vector maxCorner;
     private boolean permanent;
     private boolean active;
+    private boolean deathTriggered;
     private int cooldown;
     
     private Map<UUID, Long> cooldownTimer = new HashMap<>();
@@ -40,6 +42,7 @@ public class Portal implements ConfigurationSerializable
         this.cooldown = 0;
         this.permanent = true;
         this.active = true;
+        this.deathTriggered = false;
         actions = new ArrayList<>();
     }
 
@@ -52,6 +55,8 @@ public class Portal implements ConfigurationSerializable
         actions = (List<Action>) config.get("actions");
         cooldown = (int) config.get("cooldown");
         active = permanent;
+        if(config.get("deathTriggered") == null) deathTriggered = false;
+        else deathTriggered = (boolean) config.get("deathTriggered");
     }
 
     public Map<String, Object> serialize() {
@@ -63,6 +68,7 @@ public class Portal implements ConfigurationSerializable
         ret.put("permanent", permanent);
         ret.put("actions", actions);
         ret.put("cooldown", cooldown);
+        ret.put("deathTriggered", deathTriggered);
         return ret;
     }
 
@@ -109,6 +115,14 @@ public class Portal implements ConfigurationSerializable
         }
     }
 
+    public void sendMessage(Collection<Player> players, String message) {
+        for(Player player: players) {
+            if(isPlayerInPortal(player)) {
+                player.sendMessage(message);
+            }
+        }
+    }
+    
     public void executeActions(Player player) {
         String actionList = "";
         for(Action action: actions) {
@@ -119,7 +133,17 @@ public class Portal implements ConfigurationSerializable
         System.out.println("Portal " + name + " triggered for player " + player.getName() + " (" + actionList + ")");
     }
 
+    public Location getTeleportLocation() {
+        for(Action action: actions) {
+            if(action instanceof Teleport) {
+                return ((Teleport) action).getLocation();
+            }
+        }
+        return null;
+    }
+    
     public boolean isPlayerInPortal(Player player) {
+        if(minCorner == null) return false;
         Location loc = player.getLocation();
         if(!loc.getWorld().getUID().equals(world)) return false;
         Vector vloc = loc.toVector();
@@ -127,6 +151,7 @@ public class Portal implements ConfigurationSerializable
     }
 
     public boolean isPlayerNearPortal(Player player, double radius) {
+        if(minCorner == null) return false;
         Location loc = player.getLocation();
         if(!loc.getWorld().getUID().equals(world)) return false;
         Vector vloc = loc.toVector();
@@ -137,8 +162,13 @@ public class Portal implements ConfigurationSerializable
 
     public String getInfo() {
         String ret = name;
-        Vector max = maxCorner.clone().subtract(new Vector(1, 1, 1));
-        ret += " (" + minCorner.getX() + "," + minCorner.getY() + "," + minCorner.getZ() + " - " + max.getX() + "," + max.getY() + "," + max.getZ() + ")";
+        if(minCorner == null) {
+            ret += " (regionless)";
+        }
+        else {
+            Vector max = maxCorner.clone().subtract(new Vector(1, 1, 1));
+            ret += " (" + minCorner.getX() + "," + minCorner.getY() + "," + minCorner.getZ() + " - " + max.getX() + "," + max.getY() + "," + max.getZ() + ")";
+        }
 
         String a = "";
         for(Action action: actions) {
@@ -161,7 +191,7 @@ public class Portal implements ConfigurationSerializable
         }
         actions.add(action);
     }
-    
+
     public void redefine(World world, Vector minCorner, Vector maxCorner) {
         this.world = world.getUID();
         this.minCorner = minCorner;
@@ -197,4 +227,11 @@ public class Portal implements ConfigurationSerializable
         this.cooldown = cooldown;
     }
 
+    public boolean isDeathTriggered() {
+        return deathTriggered;
+    }
+
+    public void setDeathTriggered(boolean deathTriggered) {
+        this.deathTriggered = deathTriggered;
+    }
 }

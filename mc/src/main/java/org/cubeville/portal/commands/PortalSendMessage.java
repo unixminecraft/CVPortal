@@ -1,6 +1,5 @@
 package org.cubeville.portal.commands;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -11,6 +10,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import org.cubeville.commons.utils.ColorUtils;
 import org.cubeville.commons.commands.BaseCommand;
 import org.cubeville.commons.commands.CommandExecutionException;
 import org.cubeville.commons.commands.CommandParameterString;
@@ -18,38 +18,26 @@ import org.cubeville.commons.commands.CommandResponse;
 
 import org.cubeville.portal.PortalManager;
 
-public class PortalTrigger extends BaseCommand
+public class PortalSendMessage extends BaseCommand
 {
-    public PortalTrigger() {
-        super("trigger");
+    public PortalSendMessage() {
+        super("sendmessage");
         addBaseParameter(new CommandParameterString());
-        addFlag("random");
-        addParameter("player", true, new CommandParameterString());
+        addBaseParameter(new CommandParameterString());
     }
 
     public CommandResponse execute(CommandSender sender, Set<String> flags, Map<String, Object> parameters, List<Object> baseParameters)
         throws CommandExecutionException {
+
         String name = (String) baseParameters.get(0);
         PortalManager portalManager = PortalManager.getInstance();
         if(portalManager.getPortal(name) == null) throw new CommandExecutionException("&cPortal does not exist!");
 
-        if(flags.contains("random") && parameters.get("player") != null) throw new CommandExecutionException("&cplayer and random parameters are exclusive!");
         Collection<Player> players = (Collection<Player>) Bukkit.getServer().getOnlinePlayers();
-        if(flags.contains("random")) {
-            portalManager.getPortal(name).triggerRandom(players);
-        }
-        else if(parameters.containsKey("player")) {
-            String playerName = (String) parameters.get("player");
-            Player player = Bukkit.getServer().getPlayer(playerName);
-            if(player == null || (!player.getName().equals(playerName))) throw new CommandExecutionException("&cPlayer not found.");
-            List<Player> l = new ArrayList<>();
-            l.add(player);
-            portalManager.getPortal(name).trigger(l);
-        }
-        else {
-            portalManager.getPortal(name).trigger(players);
-        }
+        String message = ColorUtils.addColor((String) baseParameters.get(1));
+        portalManager.getPortal(name).sendMessage(players, message);
 
-        return new CommandResponse("&aPortal triggered.");
+        return new CommandResponse("&aMessage sent.");
     }
+
 }

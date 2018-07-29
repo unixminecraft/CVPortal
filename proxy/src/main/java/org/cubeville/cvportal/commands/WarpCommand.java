@@ -21,29 +21,65 @@ public class WarpCommand extends Command
     }
 
     public void execute(CommandSender commandSender, String[] args) {
-        if(!(commandSender instanceof ProxiedPlayer)) return;
-        ProxiedPlayer sender = (ProxiedPlayer) commandSender;
 
         if(args.length >= 1) {
             if(args[0].equals("delete")) {
+                if(!commandSender.hasPermission("cvportal.warp.delete")) {
+                    commandSender.sendMessage("§cNo permission.");
+                    return;
+                }
                 if(args.length != 2) {
-                    sender.sendMessage("§c/warp delete <warp>");
+                    commandSender.sendMessage("§c/warp delete <warp>");
                     return;
                 }
                 String warp = args[1];
                 if(warpManager.warpExists(warp)) {
                     warpManager.delete(warp);
-                    sender.sendMessage("§aWarp deleted.");
+                    commandSender.sendMessage("§aWarp deleted.");
                 }
                 else {
-                    sender.sendMessage("§cWarp does not exist!");
+                    commandSender.sendMessage("§cWarp does not exist!");
+                }
+                return;
+            }
+            if(args[0].equals("rename")) {
+                if(!commandSender.hasPermission("cvportal.warp.rename")) {
+                    commandSender.sendMessage("§cNo permission.");
+                    return;
+                }
+                if(args.length != 3) {
+                    commandSender.sendMessage("§c/warp rename <old> <new>");
+                    return;
+                }
+                String old = args[1];
+                String neww = args[2];
+                if(!warpManager.warpExists(old)) {
+                    commandSender.sendMessage("§cWarp does not exist!");
+                }
+                else if(warpManager.warpExists(neww)) {
+                    commandSender.sendMessage("§cWarp with that name already exists!");
+                }
+                else {
+                    warpManager.rename(old, neww);
+                    commandSender.sendMessage("§aWarp renamed.");
                 }
                 return;
             }
         }
+
+        if(args.length == 2) {
+            if(!commandSender.hasPermission("cvportal.warp.others")) {
+                commandSender.sendMessage("§c/warp <target>");
+                return;
+            }
+            ProxiedPlayer player = ProxyServer.getInstance().getPlayer(args[0]);
+            String target = args[1].toLowerCase();
+            warpManager.teleport(player, target);
+            return;
+        }
         
         if(args.length != 1) {
-            sender.sendMessage("§c/warp <target>");
+            commandSender.sendMessage("§c/warp <target>");
             return;
         }
 
@@ -52,7 +88,7 @@ public class WarpCommand extends Command
         if(target.equals("list")) {
             List<String> warplist = new ArrayList<>();
             for(String warp: warpManager.getWarpNames()) {
-                if(sender.hasPermission("cvportal.warp." + warp)) {
+                if(commandSender.hasPermission("cvportal.warp." + warp)) {
                     warplist.add(warp);
                 }
             }
@@ -62,10 +98,16 @@ public class WarpCommand extends Command
                 if(s.length() > 0) s += ", ";
                 s += warp;
             }
-            sender.sendMessage("§a" + s);
+            commandSender.sendMessage("§a" + s);
             return;
         }
         
+        if(!(commandSender instanceof ProxiedPlayer)) {
+            commandSender.sendMessage("§cOnly players can use warps.");
+            return;
+        }
+
+        ProxiedPlayer sender = (ProxiedPlayer) commandSender;
         if(sender.hasPermission("cvportal.warp." + target)) {
             warpManager.teleport(sender, target);
         }

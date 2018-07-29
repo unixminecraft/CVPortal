@@ -29,11 +29,8 @@ public class CVPortal extends Plugin
         pm.registerCommand(this, new BringCommand(ipc));
 
         File configFile = new File(getDataFolder(), "config.yml");
-        System.out.println("CVPortal starting up, loading config now: " + configFile);
         try {
             Configuration config = ConfigurationProvider.getProvider(YamlConfiguration.class).load(configFile);
-            System.out.println("Configuration: " + config);
-            System.out.println("Config keys: " + config.getKeys());
             WarpManager warpManager = new WarpManager((Configuration) config.get("warps"), configFile, ipc);
             pm.registerCommand(this, new WarpCommand(warpManager));
             Map<String, String> warpCommands = warpManager.getWarpCommands();
@@ -42,7 +39,7 @@ public class CVPortal extends Plugin
             }
         }
         catch(IOException e) {
-            System.out.println("Could not load cvportal warp configuration");
+            System.out.println("ERROR: Could not load cvportal warp configuration");
         }
     }
 }
