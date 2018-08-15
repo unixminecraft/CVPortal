@@ -179,6 +179,23 @@ public class Portal implements ConfigurationSerializable
         ret += a;
         return ret;
     }
+    
+    public List<String> getLongInfo() {
+        List<String> ret = new ArrayList<String>();
+        ret.add("&6" + name + "&r:");
+        if(minCorner == null) {
+            ret.add("&6Region: &cregionless");
+        }
+        else {
+            Vector max = maxCorner.clone().subtract(new Vector(1, 1, 1));
+            ret.add("&6Region: &a(" + minCorner.getX() + "," + minCorner.getY() + "," + minCorner.getZ() + ") to (" + max.getX() + "," + max.getY() + "," + max.getZ() + ")");
+        }
+        ret.add("&6Actions:");
+        for(Action action: actions) {
+            ret.add(action.getLongInfo());
+        }
+        return ret;
+    }
 
     public void addAction(Action action) {
         if(action.isSingular()) {

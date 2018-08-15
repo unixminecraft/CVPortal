@@ -23,6 +23,10 @@ public class Heal implements Action
         player.setHealth(player.getMaxHealth());
     }
 
+    public String getLongInfo() {
+        return " - &bHealing";
+    }
+    
     public String getShortInfo() {
         return "H";
     }

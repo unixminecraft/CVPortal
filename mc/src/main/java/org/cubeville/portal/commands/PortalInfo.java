@@ -31,6 +31,12 @@ public class PortalInfo extends Command
         if(portal == null) throw new CommandExecutionException("&cPortal not found!");
         if(!portal.getWorld().equals(player.getLocation().getWorld().getUID())) throw new CommandExecutionException("&cPortal is in different world!");
         
-        return new CommandResponse(portal.getInfo());
+        CommandResponse ret = new CommandResponse();
+        List<String> portalInfo = portal.getLongInfo();
+        for(String item: portalInfo) {
+            ret.addMessage(item);
+        }
+        
+        return ret;
     }
 }

@@ -29,6 +29,10 @@ public class Teleport implements Action
     public void execute(Player player) {
         player.teleport(location);
     }
+    
+    public String getLongInfo() {
+        return " - &bTeleport: " + location;
+    }
 
     public String getShortInfo() {
         return "TP";

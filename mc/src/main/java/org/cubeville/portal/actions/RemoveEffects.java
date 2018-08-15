@@ -28,6 +28,10 @@ public class RemoveEffects implements Action
         }
     }
 
+    public String getLongInfo() {
+        return " - &bRemove Effects";
+    }
+    
     public String getShortInfo() {
         return "RE";
     }

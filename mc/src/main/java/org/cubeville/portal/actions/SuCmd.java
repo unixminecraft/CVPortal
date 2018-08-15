@@ -33,6 +33,10 @@ public class SuCmd implements Action
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);
     }
 
+    public String getLongInfo() {
+        return " - &bSu Command: " + sucmd;
+    }
+    
     public String getShortInfo() {
         return "SC";
     }

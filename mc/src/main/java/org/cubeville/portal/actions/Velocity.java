@@ -31,6 +31,10 @@ public class Velocity implements Action
         player.setVelocity(velocity);
     }
 
+    public String getLongInfo() {
+        return " - &bVelocity: " + velocity;
+    }
+    
     public String getShortInfo() {
         return "VEL";
     }
