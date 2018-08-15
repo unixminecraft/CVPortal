@@ -39,6 +39,10 @@ public class CrossServerTeleport implements Action
     public boolean isSingular() {
         return true;
     }
+    
+    public String getLongInfo() {
+        return " - &bXS: Server: " + server + " / Portal: " + portal;
+    }
 
     public String getShortInfo() {
         return "XS";

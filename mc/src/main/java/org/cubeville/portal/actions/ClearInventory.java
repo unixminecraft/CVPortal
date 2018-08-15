@@ -23,6 +23,10 @@ public class ClearInventory implements Action
         player.getInventory().clear();
     }
 
+    public String getLongInfo() {
+        return " - &bClear Inventory";
+    }
+    
     public String getShortInfo() {
         return "CI";
     }

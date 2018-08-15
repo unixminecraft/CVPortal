@@ -29,6 +29,10 @@ public class Cmd implements Action
     public void execute(Player player) {
         Bukkit.dispatchCommand(player, cmd);
     }
+    
+    public String getLongInfo() {
+        return " - &bCommand: " + cmd;
+    }
 
     public String getShortInfo() {
         return "CMD";

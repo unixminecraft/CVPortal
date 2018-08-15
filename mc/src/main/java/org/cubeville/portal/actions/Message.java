@@ -29,6 +29,10 @@ public class Message implements Action
         player.sendMessage(message);
     }
 
+    public String getLongInfo() {
+        return " - &bMessage: " + message;
+    }
+    
     public String getShortInfo() {
         return "MSG";
     }
