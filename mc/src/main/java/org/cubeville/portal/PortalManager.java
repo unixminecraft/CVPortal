@@ -76,6 +76,16 @@ public class PortalManager implements Listener
         }
         return null;
     }
+    
+    public List<Portal> getMatchingPortals(String search) {
+        List<Portal> match = new ArrayList<Portal>();
+        for(Portal portal: portals) {
+            if(portal.getName().contains(search)) {
+                match.add(portal);
+            }
+        }
+        return match;
+    }
 
     public static PortalManager getInstance() {
        return instance;
