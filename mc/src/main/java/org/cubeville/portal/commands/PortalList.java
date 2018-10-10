@@ -1,5 +1,7 @@
 package org.cubeville.portal.commands;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -24,17 +26,6 @@ public class PortalList extends Command
 
     public CommandResponse execute(Player player, Set<String> flags, Map<String, Object> parameters, List<Object> baseParameters)
         throws CommandExecutionException {
-
-        /*
-        CommandResponse ret = new CommandResponse();
-        
-        PortalManager portalManager = PortalManager.getInstance();
-        for(Portal portal: portalManager.getPortals()) {
-            if(portal.getWorld().equals(player.getLocation().getWorld().getUID())) {
-                ret.addMessage(portal.getInfo());
-            }
-        }
-        */
         
         boolean nameOnly;
         if(flags.size() == 0) { nameOnly = false; }
@@ -42,18 +33,23 @@ public class PortalList extends Command
         else { nameOnly = false; }
         
         PortalManager portalManager = PortalManager.getInstance();
-        CommandResponse ret = new CommandResponse();
         
         if(baseParameters.size() == 0) {
-            for(Portal portal: portalManager.getPortals()) {
-                if(portal.getWorld().equals(player.getLocation().getWorld().getUID())) {
-                    if(nameOnly) { ret.addMessage(portal.getName()); }
-                    else { ret.addMessage(portal.getInfo()); }
-                }
+            if(nameOnly) {
+                return formatNamesNicely(portalManager.getPortals(), player);
             }
-            return ret;
+            else {
+                CommandResponse ret = new CommandResponse();
+                for(Portal portal: portalManager.getPortals()) {
+                    if(portal.getWorld().equals(player.getLocation().getWorld().getUID())) {
+                        ret.addMessage(portal.getInfo());
+                    }
+                }
+                return ret;
+            }
         }
         else {
+            CommandResponse ret = new CommandResponse();
             String search = (String) baseParameters.get(0);
             if(search.length() < 4) {
                 ret.addMessage("&cPlease have a search parameter of at least 4 characters.");
@@ -64,14 +60,53 @@ public class PortalList extends Command
                 ret.addMessage("&cNo portals found.");
                 return ret;
             }
-            for(Portal portal: matchingPortals) {
-                if(portal.getWorld().equals(player.getLocation().getWorld().getUID())) {
-                    if(nameOnly) { ret.addMessage(portal.getName()); }
-                    else { ret.addMessage(portal.getInfo()); }
-                }
+            if(nameOnly) {
+                return formatNamesNicely(matchingPortals, player);
             }
-            return ret;
+            else {
+                for(Portal portal: matchingPortals) {
+                    if(portal.getWorld().equals(player.getLocation().getWorld().getUID())) {
+                        ret.addMessage(portal.getInfo());
+                    }
+                }
+                return ret;
+            }
         }
     }
 
+    private CommandResponse formatNamesNicely(List<Portal> portals, Player player) {
+        
+        CommandResponse ret = new CommandResponse();
+        
+        if(portals.size() == 0) {
+            ret.addMessage("&cNo portals found.");
+            return ret;
+        }
+        
+        List<String> portalNames = new ArrayList<String>();
+        for(Portal portal: portals) {
+            if(portal.getWorld().equals(player.getLocation().getWorld().getUID())) {
+                portalNames.add(portal.getName());
+            }
+        }
+        
+        Collections.sort(portalNames);
+        
+        String finalNames = "";
+        if(portalNames.size() == 0) { return new CommandResponse("&cNo portals found."); }
+        if(portalNames.size() == 1) {
+            finalNames = "&a" + portalNames.get(0);
+            ret.addMessage(finalNames);
+            return ret;
+        }
+        finalNames = "&a";
+        for(int i = 0; i < portalNames.size() - 1; i++) {
+            finalNames += portalNames.get(i);
+            finalNames += ", ";
+        }
+        finalNames += portalNames.get(portalNames.size() - 1);
+        
+        ret.addMessage(finalNames);
+        return ret;
+    }
 }
