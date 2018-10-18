@@ -16,6 +16,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import org.cubeville.portal.actions.Action;
+import org.cubeville.portal.actions.Cmd;
 import org.cubeville.portal.actions.Teleport;
 
 @SerializableAs("Portal")
@@ -207,6 +208,30 @@ public class Portal implements ConfigurationSerializable
             }
         }
         actions.add(action);
+    }
+    public int countCmds() {
+        int count = 0;
+        for(Action action: this.actions) {
+            if(action.getClass().getName().equals("org.cubeville.portal.actions.Cmd")) {
+                count++;
+            }
+        }
+        return count;
+    }
+    
+    public void removeCmd(int index) {
+        int cmdIndex = 0;
+        for(int i = 0; i < this.actions.size(); i++) {
+            if(this.actions.get(i).getClass().getName().equals("org.cubeville.portal.actions.Cmd")) {
+                if(cmdIndex == index) {
+                    this.actions.remove(i);
+                    return;
+                }
+                else {
+                    cmdIndex++;
+                }
+            }
+        }
     }
 
     public void redefine(World world, Vector minCorner, Vector maxCorner) {
