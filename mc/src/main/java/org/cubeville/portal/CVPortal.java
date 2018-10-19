@@ -67,6 +67,7 @@ public class CVPortal extends JavaPlugin {
         commandParser.addCommand(new PortalInfo());
         commandParser.addCommand(new PortalList());
         commandParser.addCommand(new PortalRedefine());
+        commandParser.addCommand(new PortalRemoveCmd());
         commandParser.addCommand(new PortalSelect());
         commandParser.addCommand(new PortalSetCmd());
         commandParser.addCommand(new PortalSetSuCmd());
