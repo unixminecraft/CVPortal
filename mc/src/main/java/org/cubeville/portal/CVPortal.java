@@ -69,7 +69,6 @@ public class CVPortal extends JavaPlugin {
         commandParser.addCommand(new PortalList());
         commandParser.addCommand(new PortalLoginTarget(loginTeleporter));
         commandParser.addCommand(new PortalRedefine());
-        commandParser.addCommand(new PortalRemoveCmd());
         commandParser.addCommand(new PortalRemoveRandom());
         commandParser.addCommand(new PortalSelect());
         commandParser.addCommand(new PortalSendMessage());
@@ -84,7 +83,15 @@ public class CVPortal extends JavaPlugin {
         commandParser.addCommand(new PortalSetTeleport());
         commandParser.addCommand(new PortalSetVelocity());
         commandParser.addCommand(new PortalTrigger());
-
+        commandParser.addCommand(new PortalRemoveAction("remove teleport", "Teleport"));
+        commandParser.addCommand(new PortalRemoveAction("remove crossserver teleport", "CrossServerTeleport"));
+        commandParser.addCommand(new PortalRemoveAction("remove sucommand", "SuCmd"));
+        commandParser.addCommand(new PortalRemoveAction("remove command", "Cmd"));
+        commandParser.addCommand(new PortalRemoveAction("remove message", "Message"));
+        commandParser.addCommand(new PortalRemoveAction("remove clearinventory", "ClearInventory"));
+        commandParser.addCommand(new PortalRemoveAction("remove removeeffects", "RemoveEffects"));
+        commandParser.addCommand(new PortalRemoveAction("remove heal", "Heal"));
+        
         tpposCommandParser = new CommandParser();
         tpposCommandParser.addCommand(new Tppos());
 

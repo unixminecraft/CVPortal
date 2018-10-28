@@ -220,31 +220,30 @@ public class Portal implements ConfigurationSerializable
         return ret;
     }
 
-    public int countCmds() {
-        int count = 0;
-        for(Action action: this.actions) {
-            if(action.getClass().getName().equals("org.cubeville.portal.actions.Cmd")) {
-                count++;
+    public int countActionsByType(Class<? extends Action> Type) {
+        int ret = 0;
+        for(Action action: actions) {
+            if(action.getClass().getName().equals(Type.getName())) {
+                ret++;
             }
         }
-        return count;
-    }
-    
-    public void removeCmd(int index) {
-        int cmdIndex = 0;
-        for(int i = 0; i < this.actions.size(); i++) {
-            if(this.actions.get(i).getClass().getName().equals("org.cubeville.portal.actions.Cmd")) {
-                if(cmdIndex == index) {
-                    this.actions.remove(i);
-                    return;
-                }
-                else {
-                    cmdIndex++;
-                }
-            }
-        }
+        return ret;
     }
 
+    public boolean removeActionByType(Class<? extends Action> Type, int Index) {
+        int aIndex = 0;
+        for(int i = 0; i < actions.size(); i++) {
+            if(actions.get(i).getClass().getName().equals(Type.getName())) {
+                if(aIndex == Index) {
+                    actions.remove(i);
+                    return true;
+                }
+                aIndex++;
+            }
+        }
+        return false;
+    }
+    
     public void redefine(World world, Vector minCorner, Vector maxCorner) {
         this.world = world.getUID();
         this.minCorner = minCorner;

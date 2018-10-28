@@ -38,8 +38,10 @@ public class PortalRemoveRandom extends Command
         if(randomActions.size() == 0) throw new CommandExecutionException("&cNo random target portals defined!");
         Random action = (Random) randomActions.get(0);
         if(action.removePortal(targetPortalName)) {
+            boolean empty = action.getPortalCount() == 0;
+            if(empty) portal.removeActionByType(Random.class, 0);
             portalManager.save();
-            return new CommandResponse("&aPortal removed.");
+            return new CommandResponse(empty ? "&aLast portal removed from list of random targets." : "&aPortal removed.");
         }
         else {
             throw new CommandExecutionException("&cPortal is not in the random target list!");
