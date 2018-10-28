@@ -29,7 +29,7 @@ public class LoginTeleporter implements Listener, IPCInterface
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerJoin(PlayerJoinEvent event) {
         final Player player = event.getPlayer();
-        UUID playerId = player.getUniqueId();
+        final UUID playerId = player.getUniqueId();
         if(loginTargets.containsKey(playerId)) {
             final String target = loginTargets.get(playerId);
             loginTargets.remove(playerId);
@@ -40,6 +40,14 @@ public class LoginTeleporter implements Listener, IPCInterface
                         teleport(player, target);
                     }
                 }, 1);
+        }
+        {
+            portalManager.ignorePlayer(playerId);
+            Bukkit.getScheduler().runTaskLater(CVPortal.getInstance(), new Runnable() {
+                    public void run() {
+                        portalManager.unignorePlayer(playerId);
+                    }
+                }, 5);
         }
     }
 

@@ -42,11 +42,12 @@ public class CVPortal extends JavaPlugin {
         ConfigurationSerialization.registerClass(Message.class);
         ConfigurationSerialization.registerClass(ClearInventory.class);
         ConfigurationSerialization.registerClass(Heal.class);
+        ConfigurationSerialization.registerClass(Random.class);
         ConfigurationSerialization.registerClass(RemoveEffects.class);
         ConfigurationSerialization.registerClass(Cmd.class);
         ConfigurationSerialization.registerClass(SuCmd.class);
         ConfigurationSerialization.registerClass(Velocity.class);
-
+        
         portalManager = new PortalManager(this);
         portalManager.start();
 
@@ -60,26 +61,28 @@ public class CVPortal extends JavaPlugin {
         cvipc.registerInterface("tplocal", loginTeleporter);
         
         commandParser = new CommandParser();
+        commandParser.addCommand(new PortalAddRandom());
         commandParser.addCommand(new PortalCreate());
-        commandParser.addCommand(new PortalSetCrossServerTeleport());
         commandParser.addCommand(new PortalDelete());
         commandParser.addCommand(new PortalFind());
         commandParser.addCommand(new PortalInfo());
         commandParser.addCommand(new PortalList());
+        commandParser.addCommand(new PortalLoginTarget(loginTeleporter));
         commandParser.addCommand(new PortalRedefine());
         commandParser.addCommand(new PortalRemoveCmd());
+        commandParser.addCommand(new PortalRemoveRandom());
         commandParser.addCommand(new PortalSelect());
+        commandParser.addCommand(new PortalSendMessage());
+        commandParser.addCommand(new PortalSet());
         commandParser.addCommand(new PortalSetCmd());
-        commandParser.addCommand(new PortalSetSuCmd());
         commandParser.addCommand(new PortalSetCooldown());
+        commandParser.addCommand(new PortalSetCrossServerTeleport());
         commandParser.addCommand(new PortalSetDeathTriggered());
         commandParser.addCommand(new PortalSetMessage());
+        commandParser.addCommand(new PortalSetPermanent());
+        commandParser.addCommand(new PortalSetSuCmd());
         commandParser.addCommand(new PortalSetTeleport());
         commandParser.addCommand(new PortalSetVelocity());
-        commandParser.addCommand(new PortalSetPermanent());
-        commandParser.addCommand(new PortalSet());
-        commandParser.addCommand(new PortalLoginTarget(loginTeleporter));
-        commandParser.addCommand(new PortalSendMessage());
         commandParser.addCommand(new PortalTrigger());
 
         tpposCommandParser = new CommandParser();

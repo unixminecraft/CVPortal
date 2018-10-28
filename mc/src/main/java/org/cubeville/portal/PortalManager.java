@@ -3,8 +3,10 @@ package org.cubeville.portal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Location;
@@ -22,6 +24,7 @@ public class PortalManager implements Listener
     private List<Portal> portals;
     private static PortalManager instance;
     private Map<UUID, Portal> respawnPortals;
+    private Set<UUID> ignoredPlayers;
     
     public PortalManager(Plugin plugin) {
         this.plugin = plugin;
@@ -32,14 +35,36 @@ public class PortalManager implements Listener
             portals = new ArrayList<>();
         }
         respawnPortals = new HashMap<>();
+        ignoredPlayers = new HashSet<>();
     }
 
+    public void ignorePlayer(UUID Player) {
+        ignoredPlayers.add(Player);
+    }
+
+    public void unignorePlayer(UUID Player) {
+        ignoredPlayers.remove(Player);
+    }
+    
     public void start() {
         if(taskId != null) plugin.getServer().getScheduler().cancelTask(taskId);
         
         Runnable runnable = new Runnable() {
                 public void run() {
-                    Collection<Player> players = (Collection<Player>) plugin.getServer().getOnlinePlayers();
+                    Collection<Player> onlinePlayers = (Collection<Player>) plugin.getServer().getOnlinePlayers();
+                    Collection<Player> players;
+                    if(ignoredPlayers.size() == 0) {
+                        players = onlinePlayers;
+                    }
+                    else {
+                        List<Player> playerList = new ArrayList<>();
+                        for(Player player: onlinePlayers) {
+                            if(!ignoredPlayers.contains(player.getUniqueId())) {
+                                playerList.add(player);
+                            }
+                        }
+                        players = playerList;
+                    }
                     for(Portal portal: portals) {
                         portal.cyclicTrigger(players);
                     }

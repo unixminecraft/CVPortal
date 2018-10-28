@@ -209,6 +209,17 @@ public class Portal implements ConfigurationSerializable
         }
         actions.add(action);
     }
+
+    public List<Action> getActionsByType(Class<? extends Action> Type) {
+        List<Action> ret = new ArrayList<>();
+        for(Action action: actions) {
+            if(action.getClass().getName().equals(Type.getName())) {
+                ret.add(action);
+            }
+        }
+        return ret;
+    }
+
     public int countCmds() {
         int count = 0;
         for(Action action: this.actions) {
