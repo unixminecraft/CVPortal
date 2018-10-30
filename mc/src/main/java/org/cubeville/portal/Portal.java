@@ -16,7 +16,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import org.cubeville.portal.actions.Action;
-import org.cubeville.portal.actions.Cmd;
 import org.cubeville.portal.actions.Teleport;
 
 @SerializableAs("Portal")
@@ -27,7 +26,6 @@ public class Portal implements ConfigurationSerializable
     private Vector minCorner;
     private Vector maxCorner;
     private boolean permanent;
-    private boolean active;
     private boolean deathTriggered;
     private int cooldown;
     
@@ -42,11 +40,11 @@ public class Portal implements ConfigurationSerializable
         this.world = world.getUID();
         this.cooldown = 0;
         this.permanent = true;
-        this.active = true;
         this.deathTriggered = false;
         actions = new ArrayList<>();
     }
 
+    @SuppressWarnings("unchecked")
     public Portal(Map<String, Object> config) {
         minCorner = (Vector) config.get("minCorner");
         maxCorner = (Vector) config.get("maxCorner");
@@ -55,7 +53,6 @@ public class Portal implements ConfigurationSerializable
         permanent = (boolean) config.get("permanent");
         actions = (List<Action>) config.get("actions");
         cooldown = (int) config.get("cooldown");
-        active = permanent;
         if(config.get("deathTriggered") == null) deathTriggered = false;
         else deathTriggered = (boolean) config.get("deathTriggered");
     }
@@ -74,7 +71,7 @@ public class Portal implements ConfigurationSerializable
     }
 
     public void cyclicTrigger(Collection<Player> players) {
-        if(active) trigger(players);
+        if(permanent) trigger(players);
     }
     
     public void trigger(Collection<Player> players) {
@@ -191,6 +188,21 @@ public class Portal implements ConfigurationSerializable
             Vector max = maxCorner.clone().subtract(new Vector(1, 1, 1));
             ret.add("&6Region: &a(" + minCorner.getX() + "," + minCorner.getY() + "," + minCorner.getZ() + ") to (" + max.getX() + "," + max.getY() + "," + max.getZ() + ")");
         }
+        String parameter = "";
+        parameter += "&bPermanent: ";
+        if(permanent) { parameter += "&aEnabled"; }
+        else { parameter += "&cDisabled"; }
+        ret.add(parameter);
+        parameter = "";
+        parameter += "&bDeath Triggered: ";
+        if(deathTriggered) { parameter += "&aEnabled"; }
+        else { parameter += "&cDisabled"; }
+        ret.add(parameter);
+        parameter = "";
+        parameter += "&bCooldown Time (seconds): ";
+        if((cooldown / 1000) <= 0) { parameter += "&cNo cooldown"; }
+        else { parameter += ("&a" + (cooldown / 1000)); }
+        ret.add(parameter);
         ret.add("&6Actions:");
         for(Action action: actions) {
             ret.add(action.getLongInfo());
@@ -267,12 +279,10 @@ public class Portal implements ConfigurationSerializable
     }
 
     public void setActive(boolean active) {
-        this.active = active;
     }
 
     public void setPermanent(boolean permanent) {
         this.permanent = permanent;
-        active = permanent;
     }
 
     public void setCooldown(int cooldown) {

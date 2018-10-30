@@ -2,7 +2,6 @@ package org.cubeville.portal.commands;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -28,6 +27,7 @@ public class PortalTrigger extends BaseCommand
         addFlag("force");
     }
 
+    @SuppressWarnings("unchecked")
     public CommandResponse execute(CommandSender sender, Set<String> flags, Map<String, Object> parameters, List<Object> baseParameters)
         throws CommandExecutionException {
         String name = (String) baseParameters.get(0);
