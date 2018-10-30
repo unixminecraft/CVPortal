@@ -19,6 +19,7 @@ public class Heal implements Action
         return ret;
     }
 
+    @SuppressWarnings("deprecation")
     public void execute(Player player) {
         player.setHealth(player.getMaxHealth());
     }

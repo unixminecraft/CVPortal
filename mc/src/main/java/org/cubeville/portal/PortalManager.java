@@ -26,9 +26,10 @@ public class PortalManager implements Listener
     private Map<UUID, Portal> respawnPortals;
     private Set<UUID> ignoredPlayers;
     
+    @SuppressWarnings("unchecked")
     public PortalManager(Plugin plugin) {
         this.plugin = plugin;
-        this.instance = this;
+        instance = this;
         taskId = null;
         portals = (List<Portal>) plugin.getConfig().get("Portals");
         if(portals == null) {
@@ -50,6 +51,7 @@ public class PortalManager implements Listener
         if(taskId != null) plugin.getServer().getScheduler().cancelTask(taskId);
         
         Runnable runnable = new Runnable() {
+                @SuppressWarnings("unchecked")
                 public void run() {
                     Collection<Player> onlinePlayers = (Collection<Player>) plugin.getServer().getOnlinePlayers();
                     Collection<Player> players;

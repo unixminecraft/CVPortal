@@ -8,7 +8,6 @@ import java.util.Map;
 import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.entity.Player;
 
-import org.cubeville.portal.Portal;
 import org.cubeville.portal.PortalManager;
 
 @SerializableAs("Random")
@@ -20,6 +19,7 @@ public class Random implements Action
         portals = new HashMap<>();
     }
 
+    @SuppressWarnings("unchecked")
     public Random(Map<String, Object> config) {
         portals = (Map<String, Integer>) config.get("portals");
     }
