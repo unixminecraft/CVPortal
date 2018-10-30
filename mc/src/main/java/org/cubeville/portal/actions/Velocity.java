@@ -3,7 +3,6 @@ package org.cubeville.portal.actions;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.util.Vector;

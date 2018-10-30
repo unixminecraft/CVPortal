@@ -10,7 +10,6 @@ import org.cubeville.commons.commands.Command;
 import org.cubeville.commons.commands.CommandExecutionException;
 import org.cubeville.commons.commands.CommandParameterString;
 import org.cubeville.commons.commands.CommandResponse;
-import org.cubeville.commons.utils.ColorUtils;
 import org.cubeville.portal.PortalManager;
 import org.cubeville.portal.actions.Cmd;
 

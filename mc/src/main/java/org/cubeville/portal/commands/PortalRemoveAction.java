@@ -26,6 +26,7 @@ public class PortalRemoveAction extends Command {
         this.className = className;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public CommandResponse execute(Player player, Set<String> flags, Map<String, Object> parameters, List<Object> baseParameters)
             throws CommandExecutionException {
