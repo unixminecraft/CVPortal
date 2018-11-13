@@ -36,16 +36,17 @@ public class CVPortal extends JavaPlugin {
     public void onEnable() {
         instance = this;
 
-        ConfigurationSerialization.registerClass(Portal.class);
-        ConfigurationSerialization.registerClass(Teleport.class);
-        ConfigurationSerialization.registerClass(CrossServerTeleport.class);
-        ConfigurationSerialization.registerClass(Message.class);
         ConfigurationSerialization.registerClass(ClearInventory.class);
+        ConfigurationSerialization.registerClass(Cmd.class);
+        ConfigurationSerialization.registerClass(CrossServerTeleport.class);
         ConfigurationSerialization.registerClass(Heal.class);
+        ConfigurationSerialization.registerClass(Message.class);
+        ConfigurationSerialization.registerClass(Portal.class);
         ConfigurationSerialization.registerClass(Random.class);
         ConfigurationSerialization.registerClass(RemoveEffects.class);
-        ConfigurationSerialization.registerClass(Cmd.class);
         ConfigurationSerialization.registerClass(SuCmd.class);
+        ConfigurationSerialization.registerClass(Teleport.class);
+        ConfigurationSerialization.registerClass(Title.class);
         ConfigurationSerialization.registerClass(Velocity.class);
         
         portalManager = new PortalManager(this);
@@ -81,16 +82,18 @@ public class CVPortal extends JavaPlugin {
         commandParser.addCommand(new PortalSetPermanent());
         commandParser.addCommand(new PortalSetSuCmd());
         commandParser.addCommand(new PortalSetTeleport());
+        commandParser.addCommand(new PortalSetTitle());
         commandParser.addCommand(new PortalSetVelocity());
         commandParser.addCommand(new PortalTrigger());
-        commandParser.addCommand(new PortalRemoveAction("remove teleport", "Teleport"));
-        commandParser.addCommand(new PortalRemoveAction("remove crossserver teleport", "CrossServerTeleport"));
-        commandParser.addCommand(new PortalRemoveAction("remove sucommand", "SuCmd"));
-        commandParser.addCommand(new PortalRemoveAction("remove command", "Cmd"));
-        commandParser.addCommand(new PortalRemoveAction("remove message", "Message"));
         commandParser.addCommand(new PortalRemoveAction("remove clearinventory", "ClearInventory"));
-        commandParser.addCommand(new PortalRemoveAction("remove removeeffects", "RemoveEffects"));
+        commandParser.addCommand(new PortalRemoveAction("remove command", "Cmd"));
+        commandParser.addCommand(new PortalRemoveAction("remove crossserver teleport", "CrossServerTeleport"));
         commandParser.addCommand(new PortalRemoveAction("remove heal", "Heal"));
+        commandParser.addCommand(new PortalRemoveAction("remove message", "Message"));
+        commandParser.addCommand(new PortalRemoveAction("remove removeeffects", "RemoveEffects"));
+        commandParser.addCommand(new PortalRemoveAction("remove sucommand", "SuCmd"));
+        commandParser.addCommand(new PortalRemoveAction("remove teleport", "Teleport"));
+        commandParser.addCommand(new PortalRemoveAction("remove title", "Title"));
         
         tpposCommandParser = new CommandParser();
         tpposCommandParser.addCommand(new Tppos());
