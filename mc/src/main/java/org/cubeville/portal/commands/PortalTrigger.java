@@ -1,6 +1,5 @@
 package org.cubeville.portal.commands;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +11,7 @@ import org.bukkit.entity.Player;
 
 import org.cubeville.commons.commands.BaseCommand;
 import org.cubeville.commons.commands.CommandExecutionException;
+import org.cubeville.commons.commands.CommandParameterInteger;
 import org.cubeville.commons.commands.CommandParameterString;
 import org.cubeville.commons.commands.CommandResponse;
 
@@ -22,7 +22,10 @@ public class PortalTrigger extends BaseCommand
     public PortalTrigger() {
         super("trigger");
         addBaseParameter(new CommandParameterString());
+
         addFlag("random");
+        addParameter("count", true, new CommandParameterInteger());
+
         addParameter("player", true, new CommandParameterString());
         addFlag("force");
     }
@@ -38,9 +41,13 @@ public class PortalTrigger extends BaseCommand
         Collection<Player> players = (Collection<Player>) Bukkit.getServer().getOnlinePlayers();
 
         if(flags.contains("force") && parameters.get("player") == null) throw new CommandExecutionException("&cforce can only be used with the player paramtere!");
-        
+
+        if(parameters.containsKey("count") && flags.contains("random") == false) throw new CommandExecutionException("&ccount can only be used with random!");
+
         if(flags.contains("random")) {
-            portalManager.getPortal(name).triggerRandom(players);
+            int count = 1;
+            if(parameters.containsKey("count")) count = (Integer) parameters.get("count");
+            portalManager.getPortal(name).triggerRandom(players, count);
         }
         else if(parameters.containsKey("player")) {
             String playerName = (String) parameters.get("player");

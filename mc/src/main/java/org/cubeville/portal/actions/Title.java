@@ -46,7 +46,7 @@ public class Title implements Action
     }
 
     public String getLongInfo() {
-        return " - &bTitle: " + title + "/" + subtitle;
+        return " - &bTitle: &r" + title + "&r/" + subtitle + " &r(" + fadeIn + "/" + stay + "/" + fadeOut + ")";
     }
 
     public String getShortInfo() {

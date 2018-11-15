@@ -82,17 +82,19 @@ public class Portal implements ConfigurationSerializable
         trigger(player, false);
     }
 
-    public void triggerRandom(Collection<Player> players) {
+    public void triggerRandom(Collection<Player> players, int count) {
         List<Player> playersInPortal = new ArrayList<>();
         for(Player player: players) {
             if(isPlayerInPortal(player)) {
                 playersInPortal.add(player);
             }
         }
-        if(playersInPortal.size() > 0) {
-            Random rnd = new Random();
+        
+        Random rnd = new Random();
+        while(playersInPortal.size() > 0 && count > 0) {
             int i = rnd.nextInt(playersInPortal.size());
-            executeActions(playersInPortal.get(i));
+            executeActions(playersInPortal.remove(i));
+            count--;
         }
     }
     
