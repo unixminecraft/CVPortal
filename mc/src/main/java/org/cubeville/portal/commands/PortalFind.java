@@ -17,6 +17,7 @@ public class PortalFind extends Command
 {
     public PortalFind() {
         super("find");
+        addFlag("target");
     }
 
     public CommandResponse execute(Player player, Set<String> flags, Map<String, Object> parameters, List<Object> baseParameters)
@@ -27,8 +28,15 @@ public class PortalFind extends Command
         PortalManager portalManager = PortalManager.getInstance();
 
         for(Portal portal: portalManager.getPortals()) {
-            if(portal.isPlayerNearPortal(player, 8)) {
-                ret.addMessage(portal.getInfo());
+            if(flags.contains("target")) {
+                if(portal.isPlayerNearTarget(player, 8)) {
+                    ret.addMessage(portal.getInfo());
+                }
+            }
+            else {
+                if(portal.isPlayerNearPortal(player, 8)) {
+                    ret.addMessage(portal.getInfo());
+                }
             }
         }
 

@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
@@ -141,6 +142,14 @@ public class Portal implements ConfigurationSerializable
         }
         return null;
     }
+
+    public boolean isPlayerNearTarget(Player player, double radius) {
+        Location tloc = getTeleportLocation();
+        if(tloc == null) return false;
+        Location ploc = player.getLocation();
+        if(!ploc.getWorld().getUID().equals(tloc.getWorld().getUID())) return false;
+        return (ploc.distance(tloc) < radius);
+    }
     
     public boolean isPlayerInPortal(Player player) {
         if(minCorner == null) return false;
@@ -156,7 +165,7 @@ public class Portal implements ConfigurationSerializable
         if(!loc.getWorld().getUID().equals(world)) return false;
         Vector vloc = loc.toVector();
         Vector min = minCorner.clone().subtract(new Vector(radius, radius, radius));
-        Vector max = minCorner.clone().add(new Vector(radius, radius, radius));
+        Vector max = maxCorner.clone().add(new Vector(radius, radius, radius));
         return vloc.isInAABB(min, max);
     }
 
@@ -188,7 +197,7 @@ public class Portal implements ConfigurationSerializable
         }
         else {
             Vector max = maxCorner.clone().subtract(new Vector(1, 1, 1));
-            ret.add("&6Region: &a(" + minCorner.getX() + "," + minCorner.getY() + "," + minCorner.getZ() + ") to (" + max.getX() + "," + max.getY() + "," + max.getZ() + ")");
+            ret.add("&6Region: &a(" + minCorner.getX() + "," + minCorner.getY() + "," + minCorner.getZ() + ") to (" + max.getX() + "," + max.getY() + "," + max.getZ() + ") in " + Bukkit.getWorld(world).getName());
         }
         String parameter = "";
         parameter += "&bPermanent: ";

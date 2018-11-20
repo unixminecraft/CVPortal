@@ -31,7 +31,7 @@ public class Ptp extends Command
 
         PortalManager portalManager = PortalManager.getInstance();
         Portal portal = portalManager.getPortal(portalName);
-        if(portal == null) throw new CommandExecutionException("&cPortal does not exist!");
+        if(portal == null) throw new CommandExecutionException("&cTarget does not exist!");
 
         if(!player.hasPermission("cvportal.ptp." + name.toLowerCase())) throw new CommandExecutionException("&cNo permission.");
         portal.executeActions(player);
