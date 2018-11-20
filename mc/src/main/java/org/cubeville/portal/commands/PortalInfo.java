@@ -29,7 +29,6 @@ public class PortalInfo extends Command
         PortalManager portalManager = PortalManager.getInstance();
         Portal portal = portalManager.getPortal(name);
         if(portal == null) throw new CommandExecutionException("&cPortal not found!");
-        if(!portal.getWorld().equals(player.getLocation().getWorld().getUID())) throw new CommandExecutionException("&cPortal is in different world!");
         
         CommandResponse ret = new CommandResponse();
         List<String> portalInfo = portal.getLongInfo();
