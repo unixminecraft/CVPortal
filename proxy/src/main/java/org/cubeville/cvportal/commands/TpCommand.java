@@ -26,6 +26,10 @@ public class TpCommand extends Command
         if(args.length == 1) {
             String target = args[0];
             if(target.startsWith("portal:")) {
+                if(!sender.hasPermission("cvportal.tp.portal")) {
+                    sender.sendMessage("§cNo permission");
+                    return;
+                }
                 target = target.substring(7);
                 String targetServer = target.substring(0, target.indexOf("|"));
                 String targetPortal = target.substring(target.indexOf("|") + 1);
