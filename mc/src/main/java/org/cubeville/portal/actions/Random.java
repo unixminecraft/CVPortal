@@ -8,6 +8,7 @@ import java.util.Map;
 import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.entity.Player;
 
+import org.cubeville.portal.Portal;
 import org.cubeville.portal.PortalManager;
 
 @SerializableAs("Random")
@@ -46,37 +47,45 @@ public class Random implements Action
         PortalManager portalManager = PortalManager.getInstance();
         int totalWeight = 0;
         List<String> portalNames = new ArrayList<>(portals.keySet());
+        List<Portal> weightedPortals = new ArrayList<>();
         for(String portalName: portalNames) {
-            if(portalManager.getPortal(portalName) != null) {
-                totalWeight += portals.get(portalName);
+            Portal portal = portalManager.getPortal(portalName);
+            if(portal != null) {
+                int weight = portals.get(portalName);
+                if(weight == 0) {
+                    portal.executeActions(player);
+                }
+                else {
+                    totalWeight += portals.get(portalName);
+                    weightedPortals.add(portal);
+                }
             }
         }
         int randomNumber = (new java.util.Random()).nextInt(totalWeight);
         int currentWeight = 0;
-        for(String portalName: portalNames) {
-            if(portalManager.getPortal(portalName) != null) {
-                if(randomNumber >= currentWeight && randomNumber < currentWeight + portals.get(portalName)) {
-                    portalManager.getPortal(portalName).executeActions(player);
-                    break;
-                }
-                currentWeight += portals.get(portalName);
+        for(Portal portal: weightedPortals) {
+            if(randomNumber >= currentWeight && randomNumber < currentWeight + portals.get(portal.getName())) {
+                portal.executeActions(player);
+                break;
             }
+            currentWeight += portals.get(portal.getName());
         }
     }
 
     public String getLongInfo() {
-        String ret = " - Random: ";
+        String ret = " - Forward: ";
         boolean first = true;
         for(String portalName: portals.keySet()) {
             if(!first) ret += ", ";
             else first = false;
-            ret += portalName + "(" + portals.get(portalName) + ")";
+            ret += portalName;
+            if(portals.get(portalName) > 0) ret += "(" + portals.get(portalName) + ")";
         }
         return ret;
     }
 
     public String getShortInfo() {
-        return "RND";
+        return "FW";
     }
 
     public boolean isSingular() {

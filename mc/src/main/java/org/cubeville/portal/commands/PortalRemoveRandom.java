@@ -19,7 +19,7 @@ import org.cubeville.portal.actions.Random;
 public class PortalRemoveRandom extends Command
 {
     public PortalRemoveRandom() {
-        super("remove random");
+        super("remove forward");
         addBaseParameter(new CommandParameterString());
         addBaseParameter(new CommandParameterString());
     }
@@ -35,16 +35,16 @@ public class PortalRemoveRandom extends Command
         String targetPortalName = (String) baseParameters.get(1);
 
         List<Action> randomActions = portal.getActionsByType(Random.class);
-        if(randomActions.size() == 0) throw new CommandExecutionException("&cNo random target portals defined!");
+        if(randomActions.size() == 0) throw new CommandExecutionException("&cNo forward target portals defined!");
         Random action = (Random) randomActions.get(0);
         if(action.removePortal(targetPortalName)) {
             boolean empty = action.getPortalCount() == 0;
             if(empty) portal.removeActionByType(Random.class, 0);
             portalManager.save();
-            return new CommandResponse(empty ? "&aLast portal removed from list of random targets." : "&aPortal removed.");
+            return new CommandResponse(empty ? "&aLast portal removed from list of forward targets." : "&aPortal removed.");
         }
         else {
-            throw new CommandExecutionException("&cPortal is not in the random target list!");
+            throw new CommandExecutionException("&cPortal is not in the forward target list!");
         }
     }
 }

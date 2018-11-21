@@ -20,7 +20,7 @@ import org.cubeville.portal.actions.Random;
 public class PortalAddRandom extends Command
 {
     public PortalAddRandom() {
-        super("add random");
+        super("add forward");
         addBaseParameter(new CommandParameterString());
         addBaseParameter(new CommandParameterString());
         addOptionalBaseParameter(new CommandParameterInteger());
@@ -35,7 +35,7 @@ public class PortalAddRandom extends Command
         if(portal == null) throw new CommandExecutionException("&cPortal does not exist!");
         
         String targetPortalName = (String) baseParameters.get(1);
-        int weight = 10;
+        int weight = 0;
         if(baseParameters.size() == 3) weight = (Integer) baseParameters.get(2);
 
         Random action;
