@@ -65,6 +65,21 @@ public class WarpManager implements IPCInterface
         return warps.keySet();
     }
 
+    public Set<String> getWarpNames(String server, String world) {
+        if(server == null || server.equals("")) return getWarpNames();
+
+        Set<String> ret = new HashSet<>();
+        for(String warp: warps.keySet()) {
+            Warp w = warps.get(warp);
+            if(w.getServer().equals(server)) {
+                if(world == null || world.equals("") || world.equals(w.getWorld())) {
+                    ret.add(warp);
+                }
+            }
+        }
+        return ret;
+    }
+    
     public boolean warpExists(String warpName) {
         return warps.containsKey(warpName);
     }

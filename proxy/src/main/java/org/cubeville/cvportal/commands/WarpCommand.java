@@ -65,6 +65,45 @@ public class WarpCommand extends Command
                 }
                 return;
             }
+            if(args[0].equals("list")) {
+                if(args.length >= 2 && (!(commandSender.hasPermission("cvportal.warp.listfiltered")))) {
+                    commandSender.sendMessage("§cNo permission.");
+                    return;
+                }
+                String server = null;
+                String world = null;
+                if(args.length == 2) {
+                    server = args[1];
+                }
+                else if(args.length == 3) {
+                    server = args[1];
+                    world = args[2];
+                }
+                else if(args.length >= 4) {
+                    commandSender.sendMessage("§c/warp list [server] [world]");
+                    return;
+                }
+
+                List<String> warplist = new ArrayList<>();
+                for(String warp: warpManager.getWarpNames(server, world)) {
+                    if(commandSender.hasPermission("cvportal.warp." + warp)) {
+                        warplist.add(warp);
+                    }
+                }
+                Collections.sort(warplist);
+                if(warplist.size() > 0) {
+                    String s = "";
+                    for(String warp: warplist) {
+                        if(s.length() > 0) s += ", ";
+                        s += warp;
+                    }
+                    commandSender.sendMessage("§a" + s);
+                }
+                else {
+                    commandSender.sendMessage("§cNo warps found.");
+                }
+                return;
+            }
         }
 
         if(args.length == 2) {
@@ -83,31 +122,13 @@ public class WarpCommand extends Command
             return;
         }
 
-        String target = args[0].toLowerCase();
-
-        if(target.equals("list")) {
-            List<String> warplist = new ArrayList<>();
-            for(String warp: warpManager.getWarpNames()) {
-                if(commandSender.hasPermission("cvportal.warp." + warp)) {
-                    warplist.add(warp);
-                }
-            }
-            Collections.sort(warplist);
-            String s = "";
-            for(String warp: warplist) {
-                if(s.length() > 0) s += ", ";
-                s += warp;
-            }
-            commandSender.sendMessage("§a" + s);
-            return;
-        }
-        
         if(!(commandSender instanceof ProxiedPlayer)) {
             commandSender.sendMessage("§cOnly players can use warps.");
             return;
         }
 
         ProxiedPlayer sender = (ProxiedPlayer) commandSender;
+        String target = args[0].toLowerCase();
         if(sender.hasPermission("cvportal.warp." + target)) {
             warpManager.teleport(sender, target);
         }

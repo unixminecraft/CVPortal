@@ -37,6 +37,10 @@ public class Warp
         return command;
     }
 
+    public String getWorld() {
+        return world;
+    }
+    
     public Map<String, Object> getConfiguration()
     {
         Map<String, Object> config = new HashMap<>();
