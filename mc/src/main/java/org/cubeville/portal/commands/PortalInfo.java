@@ -18,7 +18,7 @@ public class PortalInfo extends Command
 {
     public PortalInfo() {
         super("info");
-        addBaseParameter(new CommandParameterString());
+        addBaseParameter(new CommandParameterPortal());
     }
     
     public CommandResponse execute(Player player, Set<String> flags, Map<String, Object> parameters, List<Object> baseParameters)

@@ -41,6 +41,7 @@ public class CVPortal extends JavaPlugin {
         ConfigurationSerialization.registerClass(CrossServerTeleport.class);
         ConfigurationSerialization.registerClass(Heal.class);
         ConfigurationSerialization.registerClass(Message.class);
+        ConfigurationSerialization.registerClass(Playsound.class);
         ConfigurationSerialization.registerClass(Portal.class);
         ConfigurationSerialization.registerClass(Random.class);
         ConfigurationSerialization.registerClass(RemoveEffects.class);
@@ -80,10 +81,13 @@ public class CVPortal extends JavaPlugin {
         commandParser.addCommand(new PortalSetDeathTriggered());
         commandParser.addCommand(new PortalSetMessage());
         commandParser.addCommand(new PortalSetPermanent());
+        commandParser.addCommand(new PortalSetPermission());
+        commandParser.addCommand(new PortalSetSound());
         commandParser.addCommand(new PortalSetSuCmd());
         commandParser.addCommand(new PortalSetTeleport());
         commandParser.addCommand(new PortalSetTitle());
         commandParser.addCommand(new PortalSetVelocity());
+        commandParser.addCommand(new PortalSetYaw());
         commandParser.addCommand(new PortalTrigger());
         commandParser.addCommand(new PortalRemoveAction("remove clearinventory", "ClearInventory"));
         commandParser.addCommand(new PortalRemoveAction("remove command", "Cmd"));
@@ -91,6 +95,7 @@ public class CVPortal extends JavaPlugin {
         commandParser.addCommand(new PortalRemoveAction("remove heal", "Heal"));
         commandParser.addCommand(new PortalRemoveAction("remove message", "Message"));
         commandParser.addCommand(new PortalRemoveAction("remove removeeffects", "RemoveEffects"));
+        commandParser.addCommand(new PortalRemoveAction("remove sound", "Playsound"));
         commandParser.addCommand(new PortalRemoveAction("remove sucommand", "SuCmd"));
         commandParser.addCommand(new PortalRemoveAction("remove teleport", "Teleport"));
         commandParser.addCommand(new PortalRemoveAction("remove title", "Title"));

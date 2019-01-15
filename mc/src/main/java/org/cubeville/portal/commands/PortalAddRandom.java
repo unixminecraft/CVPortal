@@ -8,7 +8,6 @@ import org.bukkit.entity.Player;
 
 import org.cubeville.commons.commands.Command;
 import org.cubeville.commons.commands.CommandExecutionException;
-import org.cubeville.commons.commands.CommandParameterString;
 import org.cubeville.commons.commands.CommandResponse;
 import org.cubeville.commons.commands.CommandParameterInteger;
 
@@ -21,20 +20,17 @@ public class PortalAddRandom extends Command
 {
     public PortalAddRandom() {
         super("add forward");
-        addBaseParameter(new CommandParameterString());
-        addBaseParameter(new CommandParameterString());
+        addBaseParameter(new CommandParameterPortal());
+        addBaseParameter(new CommandParameterPortal());
         addOptionalBaseParameter(new CommandParameterInteger());
     }
 
     public CommandResponse execute(Player player, Set<String> flags, Map<String, Object> parameters, List<Object> baseParameters)
         throws CommandExecutionException {
 
-        String portalName = (String) baseParameters.get(0);
-        PortalManager portalManager = PortalManager.getInstance();
-        Portal portal = portalManager.getPortal(portalName);
-        if(portal == null) throw new CommandExecutionException("&cPortal does not exist!");
+        Portal portal = (Portal) baseParameters.get(0);
+        Portal targetPortal = (Portal) baseParameters.get(1);
         
-        String targetPortalName = (String) baseParameters.get(1);
         int weight = 0;
         if(baseParameters.size() == 3) weight = (Integer) baseParameters.get(2);
 
@@ -45,10 +41,10 @@ public class PortalAddRandom extends Command
             portal.addAction(action);
         }
         else {
-            action = (Random)randomActions.get(0);
+            action = (Random) randomActions.get(0);
         }
-        action.addPortal(targetPortalName, weight);
-        portalManager.save();
+        action.addPortal(targetPortal.getName(), weight);
+        PortalManager.getInstance().save();
         
         return new CommandResponse("&aPortal added.");
     }

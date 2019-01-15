@@ -9,10 +9,10 @@ import org.bukkit.util.Vector;
 
 import org.cubeville.commons.commands.Command;
 import org.cubeville.commons.commands.CommandExecutionException;
-import org.cubeville.commons.commands.CommandParameterString;
 import org.cubeville.commons.commands.CommandParameterVector;
 import org.cubeville.commons.commands.CommandResponse;
 
+import org.cubeville.portal.Portal;
 import org.cubeville.portal.PortalManager;
 import org.cubeville.portal.actions.Velocity;
 
@@ -21,20 +21,18 @@ public class PortalSetVelocity extends Command
     public PortalSetVelocity() {
         super("set velocity");
         setPermission("cvportal.setvelocity");
-        addBaseParameter(new CommandParameterString());
+        addBaseParameter(new CommandParameterPortal());
         addBaseParameter(new CommandParameterVector());
     }
 
     public CommandResponse execute(Player player, Set<String> flags, Map<String, Object> parameters, List<Object> baseParameters)
         throws CommandExecutionException {
 
-        String name = (String) baseParameters.get(0);
-        PortalManager portalManager = PortalManager.getInstance();
-        if(portalManager.getPortal(name) == null) throw new CommandExecutionException("&cPortal does not exist!");
+        Portal portal = (Portal) baseParameters.get(0);
 
         Vector velocity = (Vector) baseParameters.get(1);
-        portalManager.getPortal(name).addAction(new Velocity(velocity));
-        portalManager.save();
+        portal.addAction(new Velocity(velocity));
+        PortalManager.getInstance().save();
 
         return new CommandResponse("&aVelocity set.");
     }

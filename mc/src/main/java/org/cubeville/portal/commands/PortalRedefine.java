@@ -9,7 +9,6 @@ import org.bukkit.util.Vector;
 
 import org.cubeville.commons.commands.Command;
 import org.cubeville.commons.commands.CommandExecutionException;
-import org.cubeville.commons.commands.CommandParameterString;
 import org.cubeville.commons.commands.CommandResponse;
 import org.cubeville.commons.utils.BlockUtils;
 
@@ -21,18 +20,14 @@ public class PortalRedefine extends Command
 {
     public PortalRedefine() {
         super("redefine");
-        addBaseParameter(new CommandParameterString());
+        addBaseParameter(new CommandParameterPortal());
         addFlag("tolerant");
     }
 
     public CommandResponse execute(Player player, Set<String> flags, Map<String, Object> parameters, List<Object> baseParameters)
         throws CommandExecutionException {
 
-        String name = (String) baseParameters.get(0);
-
-        PortalManager portalManager = PortalManager.getInstance();
-        Portal portal = portalManager.getPortal(name);
-        if(portal == null) throw new CommandExecutionException("&cPortal not found!");
+        Portal portal = (Portal) baseParameters.get(0);
 
         Vector min = BlockUtils.getWESelectionMin(player).toVector();
         Vector max = BlockUtils.getWESelectionMax(player).toVector();
@@ -44,7 +39,7 @@ public class PortalRedefine extends Command
         }
         
         portal.redefine(player.getLocation().getWorld(), min, max);
-        portalManager.save();
+        PortalManager.getInstance().save();
 
         return new CommandResponse("&aPortal redefined.");
     }

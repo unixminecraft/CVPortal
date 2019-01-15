@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import org.cubeville.commons.commands.DynamicallyEnumeratedObjectSource;
+
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -17,11 +19,12 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.plugin.Plugin;
 
-public class PortalManager implements Listener
+public class PortalManager implements Listener, DynamicallyEnumeratedObjectSource
 {
     private Plugin plugin;
     private Integer taskId;
     private List<Portal> portals;
+    
     private static PortalManager instance;
     private Map<UUID, Portal> respawnPortals;
     private Set<UUID> ignoredPlayers;
@@ -103,7 +106,7 @@ public class PortalManager implements Listener
         }
         return null;
     }
-    
+
     public List<Portal> getMatchingPortals(String search) {
         List<Portal> match = new ArrayList<Portal>();
         for(Portal portal: portals) {
@@ -143,5 +146,18 @@ public class PortalManager implements Listener
             respawnPortals.remove(player.getUniqueId());
         }
     }
-    
+
+    public boolean containsObject(String value) {
+        for(Portal portal: portals) {
+            if(portal.getName().equals(value)) return true;
+        }
+        return false;
+    }
+
+    public Object getObject(String value) {
+        for(Portal portal: portals) {
+            if(portal.getName().equals(value)) return portal;
+        }
+        return null;
+    }
 }

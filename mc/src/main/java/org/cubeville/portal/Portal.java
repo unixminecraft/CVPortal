@@ -29,6 +29,9 @@ public class Portal implements ConfigurationSerializable
     private boolean permanent;
     private boolean deathTriggered;
     private int cooldown;
+    private String permission;
+    private int minYaw;
+    private int maxYaw;
     
     private Map<UUID, Long> cooldownTimer = new HashMap<>();
 
@@ -42,6 +45,9 @@ public class Portal implements ConfigurationSerializable
         this.cooldown = 0;
         this.permanent = true;
         this.deathTriggered = false;
+        this.permission = null;
+        this.minYaw = 0;
+        this.maxYaw = 0;
         actions = new ArrayList<>();
     }
 
@@ -54,6 +60,19 @@ public class Portal implements ConfigurationSerializable
         permanent = (boolean) config.get("permanent");
         actions = (List<Action>) config.get("actions");
         cooldown = (int) config.get("cooldown");
+        permission = null;
+        if(config.get("permission") != null) {
+            permission = (String) config.get("permission");
+            if(permission.equals("")) permission = null;
+        }
+        if(config.get("minYaw") != null && config.get("maxYaw") != null) {
+            minYaw = (int) config.get("minYaw");
+            maxYaw = (int) config.get("maxYaw");
+        }
+        else {
+            minYaw = 0;
+            maxYaw = 0;
+        }
         if(config.get("deathTriggered") == null) deathTriggered = false;
         else deathTriggered = (boolean) config.get("deathTriggered");
     }
@@ -68,6 +87,9 @@ public class Portal implements ConfigurationSerializable
         ret.put("actions", actions);
         ret.put("cooldown", cooldown);
         ret.put("deathTriggered", deathTriggered);
+        ret.put("permission", permission == null ? "" : permission);
+        ret.put("minYaw", minYaw);
+        ret.put("maxYaw", maxYaw);
         return ret;
     }
 
@@ -79,14 +101,19 @@ public class Portal implements ConfigurationSerializable
         for(Player player: players) trigger(player, false);
     }
 
-    public void trigger(Player player) {
-        trigger(player, false);
+    public boolean trigger(Player player) {
+        return trigger(player, false);
     }
 
+    private boolean playerHasPermission(Player player) {
+        if(permission == null || permission.equals("")) return true;
+        return player.hasPermission("cvportal.portal." + permission);
+    }
+    
     public void triggerRandom(Collection<Player> players, int count) {
         List<Player> playersInPortal = new ArrayList<>();
         for(Player player: players) {
-            if(isPlayerInPortal(player)) {
+            if(isPlayerInPortal(player) && playerHasPermission(player)) {
                 playersInPortal.add(player);
             }
         }
@@ -99,21 +126,24 @@ public class Portal implements ConfigurationSerializable
         }
     }
     
-    public void trigger(Player player, boolean overrideCooldown) {
-        if(isPlayerInPortal(player)) {
+    public boolean trigger(Player player, boolean overrideCooldown) {
+        if(isPlayerInPortal(player) && playerHasPermission(player)) {
             if(cooldown == 0 || overrideCooldown) {
                 executeActions(player);
+                return true;
             }
             else {
                 long now = System.currentTimeMillis();
                 UUID uuid = player.getUniqueId();
                 if(cooldownTimer.containsKey(uuid)) {
-                    if(now - cooldownTimer.get(uuid) < cooldown) return;
+                    if(now - cooldownTimer.get(uuid) < cooldown) return false;
                 }
                 cooldownTimer.put(uuid, now);
                 executeActions(player);
+                return true;
             }
         }
+        return false;
     }
 
     public void sendMessage(Collection<Player> players, String message) {
@@ -156,7 +186,19 @@ public class Portal implements ConfigurationSerializable
         Location loc = player.getLocation();
         if(!loc.getWorld().getUID().equals(world)) return false;
         Vector vloc = loc.toVector();
-        return vloc.isInAABB(minCorner, maxCorner);
+        if(!vloc.isInAABB(minCorner, maxCorner)) return false;
+        if(minYaw != maxYaw) {
+            int pyaw = (int) loc.getYaw();
+            while(pyaw < -180) pyaw += 360;
+            while(pyaw > 180) pyaw -= 360;
+            if(minYaw < maxYaw) {
+                if(pyaw < minYaw || pyaw > maxYaw) return false;
+            }
+            else {
+                if(pyaw < minYaw && pyaw > maxYaw) return false;
+            }
+        }
+        return true;
     }
 
     public boolean isPlayerNearPortal(Player player, double radius) {
@@ -176,7 +218,11 @@ public class Portal implements ConfigurationSerializable
         }
         else {
             Vector max = maxCorner.clone().subtract(new Vector(1, 1, 1));
-            ret += " (" + minCorner.getX() + "," + minCorner.getY() + "," + minCorner.getZ() + " - " + max.getX() + "," + max.getY() + "," + max.getZ() + ")";
+            ret += " (" + minCorner.getX() + "," + minCorner.getY() + "," + minCorner.getZ() + " - " + max.getX() + "," + max.getY() + "," + max.getZ();
+            if(minYaw != maxYaw) {
+                ret += "; " + minYaw + "-" + maxYaw;
+            }
+            ret += ")";
         }
 
         String a = "";
@@ -197,8 +243,16 @@ public class Portal implements ConfigurationSerializable
         }
         else {
             Vector max = maxCorner.clone().subtract(new Vector(1, 1, 1));
-            ret.add("&6Region: &a(" + minCorner.getX() + "," + minCorner.getY() + "," + minCorner.getZ() + ") to (" + max.getX() + "," + max.getY() + "," + max.getZ() + ") in " + Bukkit.getWorld(world).getName());
+            String sloc = "&6Region: &a" + minCorner.getX() + "," + minCorner.getY() + "," + minCorner.getZ() + " - " + max.getX() + "," + max.getY() + "," + max.getZ();
+            if(minYaw != maxYaw) {
+                sloc += "; " + minYaw + "-" + maxYaw;
+            }
+            sloc += " in " + Bukkit.getWorld(world).getName();
+            ret.add(sloc);
         }
+        String permissionString = "&cNone";
+        if(permission != null && (!permission.equals(""))) permissionString = "&a" + permission;
+        ret.add("&bPermission: " + permissionString);
         String parameter = "";
         parameter += "&bPermanent: ";
         if(permanent) { parameter += "&aEnabled"; }
@@ -306,5 +360,14 @@ public class Portal implements ConfigurationSerializable
 
     public void setDeathTriggered(boolean deathTriggered) {
         this.deathTriggered = deathTriggered;
+    }
+
+    public void setPermission(String permission) {
+        this.permission = permission;
+    }
+
+    public void setYaw(int minYaw, int maxYaw) {
+        this.minYaw = minYaw;
+        this.maxYaw = maxYaw;
     }
 }

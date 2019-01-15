@@ -20,18 +20,14 @@ public class PortalRemoveRandom extends Command
 {
     public PortalRemoveRandom() {
         super("remove forward");
-        addBaseParameter(new CommandParameterString());
+        addBaseParameter(new CommandParameterPortal());
         addBaseParameter(new CommandParameterString());
     }
 
     public CommandResponse execute(Player player, Set<String> flags, Map<String, Object> parameters, List<Object> baseParameters)
         throws CommandExecutionException {
 
-        String portalName = (String) baseParameters.get(0);
-        PortalManager portalManager = PortalManager.getInstance();
-        Portal portal = portalManager.getPortal(portalName);
-        if(portal == null) throw new CommandExecutionException("&cPortal does not exist!");
-
+        Portal portal = (Portal) baseParameters.get(0);
         String targetPortalName = (String) baseParameters.get(1);
 
         List<Action> randomActions = portal.getActionsByType(Random.class);
@@ -40,7 +36,7 @@ public class PortalRemoveRandom extends Command
         if(action.removePortal(targetPortalName)) {
             boolean empty = action.getPortalCount() == 0;
             if(empty) portal.removeActionByType(Random.class, 0);
-            portalManager.save();
+            PortalManager.getInstance().save();
             return new CommandResponse(empty ? "&aLast portal removed from list of forward targets." : "&aPortal removed.");
         }
         else {

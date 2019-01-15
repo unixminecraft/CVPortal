@@ -61,6 +61,8 @@ public class Random implements Action
                 }
             }
         }
+
+        if(weightedPortals.size() == 0) return;
         int randomNumber = (new java.util.Random()).nextInt(totalWeight);
         int currentWeight = 0;
         for(Portal portal: weightedPortals) {

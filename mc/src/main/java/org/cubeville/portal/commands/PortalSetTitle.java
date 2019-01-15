@@ -12,6 +12,8 @@ import org.cubeville.commons.commands.CommandParameterInteger;
 import org.cubeville.commons.commands.CommandParameterString;
 import org.cubeville.commons.commands.CommandResponse;
 import org.cubeville.commons.utils.ColorUtils;
+
+import org.cubeville.portal.Portal;
 import org.cubeville.portal.PortalManager;
 import org.cubeville.portal.actions.Title;
 
@@ -19,7 +21,7 @@ public class PortalSetTitle extends Command
 {
     public PortalSetTitle() {
         super("set title");
-        addBaseParameter(new CommandParameterString());
+        addBaseParameter(new CommandParameterPortal());
         addBaseParameter(new CommandParameterString());
         addBaseParameter(new CommandParameterString());
         addBaseParameter(new CommandParameterInteger());
@@ -30,9 +32,7 @@ public class PortalSetTitle extends Command
     public CommandResponse execute(Player player, Set<String> flags, Map<String, Object> parameters, List<Object> baseParameters)
         throws CommandExecutionException {
 
-        String name = (String) baseParameters.get(0);
-        PortalManager portalManager = PortalManager.getInstance();
-        if(portalManager.getPortal(name) == null) throw new CommandExecutionException("&cPortal does not exist!");
+        Portal portal = (Portal) baseParameters.get(0);
 
         String title = (String) baseParameters.get(1);
         title = ColorUtils.addColor(title);
@@ -42,8 +42,8 @@ public class PortalSetTitle extends Command
         int stay = (Integer) baseParameters.get(4);
         int fadeOut = (Integer) baseParameters.get(5);
 
-        portalManager.getPortal(name).addAction(new Title(title, subtitle, fadeIn, stay, fadeOut));
-        portalManager.save();
+        portal.addAction(new Title(title, subtitle, fadeIn, stay, fadeOut));
+        PortalManager.getInstance().save();
 
         return new CommandResponse("&aTitle set.");
     }
