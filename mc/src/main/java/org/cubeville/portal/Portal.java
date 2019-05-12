@@ -153,6 +153,14 @@ public class Portal implements ConfigurationSerializable
             }
         }
     }
+
+    public void sendTitle(Collection<Player> players, String title, String subtitle, int fadeIn, int stay, int fadeOut) {
+        for(Player player: players) {
+            if(isPlayerInPortal(player)) {
+                player.sendTitle(title, subtitle, fadeIn, stay, fadeOut);
+            }
+        }
+    }
     
     public void executeActions(Player player) {
         String actionList = "";

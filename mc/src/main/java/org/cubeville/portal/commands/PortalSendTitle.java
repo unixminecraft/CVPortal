@@ -12,17 +12,22 @@ import org.bukkit.entity.Player;
 import org.cubeville.commons.utils.ColorUtils;
 import org.cubeville.commons.commands.BaseCommand;
 import org.cubeville.commons.commands.CommandExecutionException;
+import org.cubeville.commons.commands.CommandParameterInteger;
 import org.cubeville.commons.commands.CommandParameterString;
 import org.cubeville.commons.commands.CommandResponse;
 
 import org.cubeville.portal.Portal;
 
-public class PortalSendMessage extends BaseCommand
+public class PortalSendTitle extends BaseCommand
 {
-    public PortalSendMessage() {
-        super("sendmessage");
+    public PortalSendTitle() {
+        super("sendtitle");
         addBaseParameter(new CommandParameterPortal());
         addBaseParameter(new CommandParameterString());
+        addBaseParameter(new CommandParameterString());
+        addBaseParameter(new CommandParameterInteger());
+        addBaseParameter(new CommandParameterInteger());
+        addBaseParameter(new CommandParameterInteger());
     }
 
     @SuppressWarnings("unchecked")
@@ -32,10 +37,15 @@ public class PortalSendMessage extends BaseCommand
         Portal portal = (Portal) baseParameters.get(0);
 
         Collection<Player> players = (Collection<Player>) Bukkit.getServer().getOnlinePlayers();
-        String message = ColorUtils.addColor((String) baseParameters.get(1));
-        portal.sendMessage(players, message);
+        String title = ColorUtils.addColor((String) baseParameters.get(1));
+        String subtitle = ColorUtils.addColor((String) baseParameters.get(2));
+        int fadeIn = (Integer) baseParameters.get(3);
+        int stay = (Integer) baseParameters.get(4);
+        int fadeOut = (Integer) baseParameters.get(5);
+        
+        portal.sendTitle(players, title, subtitle, fadeIn, stay, fadeOut);
 
-        return new CommandResponse("&aMessage sent.");
+        return new CommandResponse("&aTitle sent.");
     }
-
+        
 }
