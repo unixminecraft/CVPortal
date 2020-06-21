@@ -2,6 +2,7 @@ name: CVPortal
 main: org.cubeville.portal.CVPortal
 author: FrediW
 version: 0.1
+api-version: 1.15
 
 depend: [CVTools,CVIPC]
 
